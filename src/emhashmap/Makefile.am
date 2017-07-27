@@ -1,7 +1,7 @@
 AM_CFLAGS = -Wall
 AM_LDFLAGS = 
 
-includedir = /usr/local/include
+includedir = /usr/local/include/emhashmap
 include_HEADERS = emhashmap.h
 
 lib_LTLIBRARIES = libemhashmap.la
