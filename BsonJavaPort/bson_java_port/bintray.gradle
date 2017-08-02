@@ -2,10 +2,10 @@ apply plugin: "com.jfrog.bintray"
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'maven-publish'
 
-def siteUrl = 'https://github.com/smartdevicelink/sdl_android'      // Homepage URL of the library
-def gitUrl = 'https://github.com/smartdevicelink/sdl_android.git'   // Git repository URL
+def siteUrl = 'https://github.com/smartdevicelink/bson_c_lib/'      // Homepage URL of the library
+def gitUrl = 'https://github.com/smartdevicelink/bson_c_lib.git'   // Git repository URL
 group = "com.smartdevicelink" // Maven Group ID for the artifact
-def libDescription = 'SmartDeviceLink mobile library for Android'
+def libDescription = 'BSON library for SmartDeviceLink'
 
 install {
     repositories.mavenInstaller {
