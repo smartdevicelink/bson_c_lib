@@ -5,7 +5,7 @@ BsonObject bsonObject;
 BsonArray bsonArray;
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1int32(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1int32(JNIEnv *env, jclass type,
                                                                          jlong bsonRef,
                                                                          jstring key_, jint value) {
     const char* key = (*env)->GetStringUTFChars(env, key_, 0);
@@ -18,7 +18,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1int32(JNIEnv *en
 }
 
 JNIEXPORT jbyteArray JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1to_1bytes(JNIEnv *env,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1to_1bytes(JNIEnv *env,
                                                                         jobject instance,
                                                                         jlong bsonRef) {
 
@@ -34,7 +34,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1to_1bytes(JNIEnv *env
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1int64(JNIEnv *env,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1int64(JNIEnv *env,
                                                                          jobject instance,
                                                                          jlong bsonRef,
                                                                          jstring key_,
@@ -49,7 +49,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1int64(JNIEnv *en
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1string(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1string(JNIEnv *env, jclass type,
                                                                           jlong bsonRef,
                                                                           jstring key_,
                                                                           jstring value_) {
@@ -67,7 +67,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1string(JNIEnv *e
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1bool(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1bool(JNIEnv *env, jclass type,
                                                                         jlong bsonRef, jstring key_,
                                                                         jboolean value) {
     const char *key = (*env)->GetStringUTFChars(env, key_, 0);
@@ -89,7 +89,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1bool(JNIEnv *env
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1double(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1double(JNIEnv *env, jclass type,
                                                                           jlong bsonRef,
                                                                           jstring key_,
                                                                           jdouble value) {
@@ -103,7 +103,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1double(JNIEnv *e
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1object(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1object(JNIEnv *env, jclass type,
                                                                           jlong bsonRef,
                                                                           jstring key_,
                                                                           jbyteArray value_) {
@@ -120,7 +120,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1object(JNIEnv *e
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1from_1bytes(JNIEnv *env,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1from_1bytes(JNIEnv *env,
                                                                           jobject instance,
                                                                           jbyteArray data_) {
     jbyte *data = (*env)->GetByteArrayElements(env, data_, NULL);
@@ -133,7 +133,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1from_1bytes(JNIEnv *e
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_initializeBsonArray(JNIEnv *env, jclass type) {
+Java_com_livio_BSON_BsonEncoder_initializeBsonArray(JNIEnv *env, jclass type) {
 
     int default_size = 5;
     bson_array_initialize(&bsonArray, default_size);
@@ -142,7 +142,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_initializeBsonArray(JNIEnv *env, jc
 }
 
 JNIEXPORT void JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_deinitializeBsonArray(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_deinitializeBsonArray(JNIEnv *env, jclass type,
                                                                       jlong bsonRef) {
 
     bson_array_deinitialize((BsonArray*) bsonRef);
@@ -150,7 +150,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_deinitializeBsonArray(JNIEnv *env, 
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1int32(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1int32(JNIEnv *env, jclass type,
                                                                         jlong bsonRef, jint value) {
 
     jboolean tf = (jboolean) bson_array_add_int32((BsonArray*) bsonRef, value);
@@ -160,7 +160,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1int32(JNIEnv *env
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1int64(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1int64(JNIEnv *env, jclass type,
                                                                         jlong bsonRef,
                                                                         jlong value) {
 
@@ -171,7 +171,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1int64(JNIEnv *env
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1string(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1string(JNIEnv *env, jclass type,
                                                                          jlong bsonRef,
                                                                          jstring value_) {
     const char *value = (*env)->GetStringUTFChars(env, value_, 0);
@@ -184,7 +184,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1string(JNIEnv *en
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1bool(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1bool(JNIEnv *env, jclass type,
                                                                        jlong bsonRef,
                                                                        jboolean value) {
 
@@ -202,7 +202,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1bool(JNIEnv *env,
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1double(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1double(JNIEnv *env, jclass type,
                                                                          jlong bsonRef,
                                                                          jdouble value) {
 
@@ -213,7 +213,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1array_1add_1double(JNIEnv *en
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1array(JNIEnv *env,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1array(JNIEnv *env,
                                                                          jobject instance,
                                                                          jlong bsonRef,
                                                                          jstring key_,
@@ -228,7 +228,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1put_1array(JNIEnv *en
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_initializeBsonObject(JNIEnv *env, jclass type) {
+Java_com_livio_BSON_BsonEncoder_initializeBsonObject(JNIEnv *env, jclass type) {
 
     bson_object_initialize_default(&bsonObject);
     return (long) &bsonObject;
@@ -236,7 +236,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_initializeBsonObject(JNIEnv *env, j
 }
 
 JNIEXPORT void JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_deinitializeBsonObject(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_deinitializeBsonObject(JNIEnv *env, jclass type,
                                                                        jlong bsonRef) {
 
     bson_object_deinitialize((BsonObject*) bsonRef);
@@ -244,7 +244,7 @@ Java_com_livio_bsonjavaport_BSON_BsonEncoder_deinitializeBsonObject(JNIEnv *env,
 }
 
 JNIEXPORT jobject JNICALL
-Java_com_livio_bsonjavaport_BSON_BsonEncoder_bson_1object_1get_1hashmap(JNIEnv *env, jclass type,
+Java_com_livio_BSON_BsonEncoder_bson_1object_1get_1hashmap(JNIEnv *env, jclass type,
                                                                         jlong bsonRef) {
 
     // initialize the HashMap class
