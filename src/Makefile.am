@@ -2,7 +2,6 @@ SUBDIRS = emhashmap
 
 AM_CFLAGS = -Wall
 
-includedir = /usr/local/include
 include_HEADERS = bson_object.h bson_array.h bson_util.h
 
 lib_LTLIBRARIES = libbson.la
