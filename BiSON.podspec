@@ -26,6 +26,7 @@ Pod::Spec.new do |s|
   #
 
   s.license      = { :type => "New BSD", :file => "LICENSE" }
+  s.preserve_path = 'src/emhashmap/LICENSE' 
 
 
   # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
