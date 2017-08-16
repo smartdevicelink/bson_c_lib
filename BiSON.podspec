@@ -70,6 +70,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "src/**/*.{h,c}"
+  s.source_files  = "src/*.{h,c}", "src/emhashmap/*.{h,c}"
+  s.header_mappings_dir = 'src/emhashmap'
 
 end
