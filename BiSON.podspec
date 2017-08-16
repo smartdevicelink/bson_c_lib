@@ -71,6 +71,6 @@ Pod::Spec.new do |s|
   #
 
   s.source_files  = "src/*.{h,c}", "src/emhashmap/*.{h,c}"
-  s.header_mappings_dir = 'src/emhashmap'
+  s.header_mappings_dir = 'src'
 
 end
