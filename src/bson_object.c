@@ -398,7 +398,13 @@ MapIterator bson_object_iterator(BsonObject *obj) {
 BsonObjectEntry bson_object_iterator_next(MapIterator *iterator) {
   MapEntry *entry = emhashmap_iterator_next(iterator);
   BsonObjectEntry bsonEntry;
-  strncpy(bsonEntry.key, entry->key, 255);
-  bsonEntry.element = (BsonElement *)entry->value;
+  if(entry == NULL) {
+    bsonEntry.key[0] = 0x00; //Assign empty string
+    bsonEntry.element = NULL;
+  }
+  else {
+    strncpy(bsonEntry.key, entry->key, 255);
+    bsonEntry.element = (BsonElement *)entry->value;
+  }
   return bsonEntry;
 }
