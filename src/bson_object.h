@@ -279,7 +279,8 @@ MapIterator bson_object_iterator(BsonObject *obj);
   @param iterator - The iterator to be advanced
 
   @return - The next BSON object entry in the object if it exists, 
-            NULL if the iterator has moved past the end of the entry list
+            an entry with a NULL element if the iterator has moved past the end 
+            of the entry list
 */
 BsonObjectEntry bson_object_iterator_next(MapIterator *iterator);
 
