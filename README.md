@@ -12,6 +12,12 @@ make
 sudo make install
 ```
 
+## Build Lua wrapper ##
+```bash
+./configure --with-lua-wrapper=yes
+make
+```
+
 ### Apple Platforms ###
 There is a CocoaPod for iOS, MacOS, tvOS, and watchOS. Add to your podfile:
 

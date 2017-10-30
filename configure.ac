@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT(bson_c_lib, 0.1, jacob@livio.io)
+AC_INIT(bson_c_lib, 1.1.0, jacob@livio.io)
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIRS([m4])
 LT_INIT
@@ -31,4 +31,26 @@ AC_TYPE_UINT8_T
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([memset])
 
-AC_OUTPUT(Makefile src/Makefile src/emhashmap/Makefile)
+AC_ARG_WITH(
+	[lua-wrapper], 
+	[AS_HELP_STRING(
+		[--with-lua-wrapper], 
+		[Build Lua wrapper library]
+	)], 
+	[AS_CASE(
+		${withval}, 
+		[yes], 
+		[with_lua=yes], 
+		[no], 
+		[with_lua=no], 
+		[AC_MSG_ERROR(
+			[invalid value (${withval}) for --with-lua-wrapper]
+		)]
+	)], 
+	[with_lua=no])
+
+AM_CONDITIONAL(
+	[BUILD_LUA], 
+	[test x$with_lua = xyes])
+
+AC_OUTPUT(Makefile src/Makefile src/emhashmap/Makefile lua/Makefile)
