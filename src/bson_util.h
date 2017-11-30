@@ -35,7 +35,7 @@ enum element_type {
   TYPE_OBJECT_ID = 0x07, //unused
   TYPE_BOOLEAN = 0x08,
   TYPE_DATE_TIME = 0x09, //unused
-  TYPE_NULL = 0x0A,
+  TYPE_NULL = 0x0A, //unused
   TYPE_REGEX = 0x0B, //unused
   TYPE_DB_POINTER = 0x0C, //deprecated
   TYPE_JS_CODE = 0x0D, //unused
