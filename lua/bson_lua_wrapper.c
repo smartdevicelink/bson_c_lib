@@ -11,8 +11,8 @@ static int table_to_bson_array(lua_State *L, BsonArray *arr, char *errorMessage)
 static int bson_put_map_value(lua_State *L, void *bson, const char *key, char *errorMessage);
 
 static int bson_object_to_table(lua_State *L, BsonObject *obj, char *errorMessage);
-static int bson_element_to_table(lua_State *L, BsonElement *element, char *errorMessage);
 static int bson_array_to_table(lua_State *L, BsonArray *arr, char *errorMessage);
+static int bson_element_to_table(lua_State *L, const BsonElement *element, char *errorMessage);
 
 /*
   @brief Convert a Lua table into a BSON-formatted byte string.
@@ -241,10 +241,10 @@ static int bson_put_map_value(lua_State *L, void *bson, const char *key, char *e
 
       //Assume array if no key is provided
       if (key == NULL) {
-        bson_array_add_int32((BsonArray *)bson, (int64_t)value);
+        bson_array_add_int64((BsonArray *)bson, (int64_t)value);
       }
       else {
-        bson_object_put_int32((BsonObject *)bson, key, (int64_t)value);
+        bson_object_put_int64((BsonObject *)bson, key, (int64_t)value);
       }
       break;
     }
@@ -360,7 +360,7 @@ static int map_from_bytes(lua_State *L) {
   @return 0 on success, non-zero on failure
 */
 static int bson_object_to_table(lua_State *L, BsonObject *obj, char *errorMessage) {
-  const MapIterator iter = bson_object_iterator(obj);
+  MapIterator iter = bson_object_iterator(obj);
   BsonObjectEntry entry = bson_object_iterator_next(&iter);
   lua_newtable(L); //Stack: [table]
   while (entry.element != NULL) {
@@ -426,7 +426,7 @@ static int bson_array_to_table(lua_State *L, BsonArray *arr, char *errorMessage)
 
   @return 0 on success, non-zero on failure
 */
-static int bson_element_to_table(lua_State *L, BsonElement *element, char *errorMessage) {
+static int bson_element_to_table(lua_State *L, const BsonElement *element, char *errorMessage) {
   lua_newtable(L); //Stack: [{}];
 
   lua_pushinteger(L, ((lua_Integer)element->type) & 0xFF); //Stack: [{}, type]
