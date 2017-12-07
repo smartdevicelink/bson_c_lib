@@ -6,7 +6,7 @@ size_t hash_function(const char* key, size_t maxValue) {
   size_t hash = 0;
   int i;
   for (i = 0; i < keyLength; i++) {
-    hash += key[i];
+    hash += (uint32_t)key[i];
     hash %= maxValue;
   }
   return hash;
@@ -197,7 +197,7 @@ BsonObject bson_object_from_bytes(uint8_t *data) {
         //String length is read first
         int32_t stringLength = read_int32_le(&current) - 1;
 
-        char *stringVal = byte_array_to_bson_string(current, stringLength);
+        char *stringVal = byte_array_to_bson_string(current, (size_t)stringLength);
         bson_object_put_string(&obj, key, stringVal);
         free(stringVal);
         current += stringLength + 1;
