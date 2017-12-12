@@ -10,7 +10,7 @@ static MapBucketList* find_bucket(HashMap* map, const char* key) {
     MapBucketList* bucket = NULL;
 
     if(map != NULL && map->buckets != NULL) {
-        bucket = &map->buckets[(*map->hash)(key, map->bucket_count)];
+        bucket = &map->buckets[(*map->hash)(key, (size_t)map->bucket_count)];
     }
     return bucket;
 }
@@ -30,11 +30,10 @@ void emhashmap_deinitialize(HashMap* map) {
 bool emhashmap_initialize(HashMap* map, int capacity, float load_factor, size_t (*hash_function)(const char*, size_t)) {
     map->bucket_count = ((int)(capacity / load_factor) + 1);
     map->capacity = capacity;
-    map->entries = (MapEntry*) malloc(sizeof(MapEntry) * map->capacity);
-    memset(map->entries, 0, sizeof(MapEntry) * map->capacity);
-    map->buckets = (MapBucketList*) malloc(sizeof(MapBucketList) *
-            map->bucket_count);
-    memset(map->buckets, 0, sizeof(MapBucketList) * map->bucket_count);
+    map->entries = (MapEntry*) malloc(sizeof(MapEntry) * (uint32_t)map->capacity);
+    memset(map->entries, 0, sizeof(MapEntry) * (uint32_t)map->capacity);
+    map->buckets = (MapBucketList*) malloc(sizeof(MapBucketList) * (uint32_t)map->bucket_count);
+    memset(map->buckets, 0, sizeof(MapBucketList) * (uint32_t)map->bucket_count);
     map->hash = hash_function;
     int i;
     for(i = 0; i < map->bucket_count; i++) {

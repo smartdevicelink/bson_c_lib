@@ -73,7 +73,7 @@ uint8_t *string_to_byte_array(char *stringVal) {
   uint8_t *bytes = malloc(length + 1);
   int i = 0;
   for (i = 0; i < length; i++) {
-    bytes[i] = stringVal[i];
+    bytes[i] = (uint8_t)stringVal[i];
   }
   bytes[length] = 0x00;
   return bytes;
@@ -97,7 +97,7 @@ char *byte_array_to_bson_string(uint8_t *bytes, size_t length) {
   
   int i = 0;
   for (i = 0; i < length; i++) {
-    stringVal[i] = bytes[i] & 0xFF;
+    stringVal[i] = (char)(bytes[i] & 0xFF);
   }
   stringVal[length] = 0x00;
   return stringVal;
