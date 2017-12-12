@@ -6,7 +6,7 @@ size_t hash_function(const char* key, size_t maxValue) {
   size_t hash = 0;
   int i;
   for (i = 0; i < keyLength; i++) {
-    hash += (uint32_t)key[i];
+    hash += (size_t)key[i];
     hash %= maxValue;
   }
   return hash;
