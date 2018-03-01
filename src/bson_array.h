@@ -1,24 +1,8 @@
 #ifndef BSON_ARRAY_H
 #define BSON_ARRAY_H
 
+#include "bson_fwd.h"
 #include "bson_object.h"
-
-typedef struct BsonElement BsonElement;
-typedef struct BsonObject BsonObject;
-
-typedef enum bson_boolean bson_boolean;
-typedef enum element_type element_type;
-
-//Object representing a BSON array
-struct BsonArray {
-  //Array of BSON elements
-  BsonElement **elements;
-  //Number of elements currently in the array
-  size_t count;
-  //The current maximum number of elements in the array
-  size_t maxCount;
-};
-typedef struct BsonArray BsonArray;
 
 #ifdef __cplusplus
 extern "C" {
