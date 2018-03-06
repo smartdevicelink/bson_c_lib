@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "bson_fwd.h"
+#include "bson_common.h"
 #include "bson_util.h"
 #include "bson_array.h"
 #include "emhashmap/emhashmap.h"

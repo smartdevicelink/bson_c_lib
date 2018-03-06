@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
-#include "bson_fwd.h"
+#include "bson_common.h"
 
 //4 bytes for length, one for ending null character
 #define OBJECT_OVERHEAD_BYTES 5

@@ -1,7 +1,7 @@
 #ifndef BSON_ARRAY_H
 #define BSON_ARRAY_H
 
-#include "bson_fwd.h"
+#include "bson_common.h"
 #include "bson_object.h"
 
 #ifdef __cplusplus
