@@ -66,7 +66,7 @@ There is a jCenter artifact for Android. Add the following to your `build.gradle
 
 ```
 dependencies {
-    compile ('com.smartdevicelink:bson_java_port:1.1.0')
+    compile ('com.smartdevicelink:bson_java_port:1.1.1')
 }
 ```
 
