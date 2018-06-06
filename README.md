@@ -61,6 +61,15 @@ There is a CocoaPod for iOS, MacOS, tvOS, and watchOS. Add to your podfile:
 pod 'BiSON'
 ```
 
+### Android Platforms ###
+There is a jCenter artifact for Android. Add the following to your `build.gradle`:
+
+```
+dependencies {
+    compile ('com.smartdevicelink:bson_java_port:1.1.0')
+}
+```
+
 ## Build and run sample program ##
 ```bash
 cd examples
