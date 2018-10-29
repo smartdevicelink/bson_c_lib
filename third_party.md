@@ -30,3 +30,9 @@ The third party software included and used by this project is:
 
 * Licensed under Apache License, Version 2.0.
 * See [https://services.gradle.org/distributions/gradle-4.4-all.zip](https://services.gradle.org/distributions/gradle-4.4-all.zip)
+
+**emhashmap** 
+
+* Copyright (c) 2013, Ford Motor Company 
+* Licensed under BSD 2-Clause "Simplified" License.
+* See [https://github.com/openxc/emhashmap](https://github.com/openxc/emhashmap)
