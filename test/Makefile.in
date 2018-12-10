@@ -87,8 +87,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-TESTS = bson_util_test$(EXEEXT)
-check_PROGRAMS = bson_util_test$(EXEEXT)
+TESTS = bson_util_test$(EXEEXT) bson_object_test$(EXEEXT)
+check_PROGRAMS = bson_util_test$(EXEEXT) bson_object_test$(EXEEXT)
 subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
@@ -102,14 +102,22 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am_bson_util_test_OBJECTS = bson_util_test-bson_util_test.$(OBJEXT) \
-	bson_util_test-bson_util.$(OBJEXT)
-bson_util_test_OBJECTS = $(am_bson_util_test_OBJECTS)
-bson_util_test_DEPENDENCIES =
+am_bson_object_test_OBJECTS =  \
+	bson_object_test-bson_object_test.$(OBJEXT)
+bson_object_test_OBJECTS = $(am_bson_object_test_OBJECTS)
+bson_object_test_DEPENDENCIES = $(top_builddir)/src/libbson.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+bson_object_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(bson_object_test_CFLAGS) $(CFLAGS) \
+	$(bson_object_test_LDFLAGS) $(LDFLAGS) -o $@
+am_bson_util_test_OBJECTS = bson_util_test-bson_util_test.$(OBJEXT) \
+	bson_util_test-bson_util.$(OBJEXT)
+bson_util_test_OBJECTS = $(am_bson_util_test_OBJECTS)
+bson_util_test_DEPENDENCIES =
 bson_util_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(bson_util_test_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
@@ -148,8 +156,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(bson_util_test_SOURCES)
-DIST_SOURCES = $(bson_util_test_SOURCES)
+SOURCES = $(bson_object_test_SOURCES) $(bson_util_test_SOURCES)
+DIST_SOURCES = $(bson_object_test_SOURCES) $(bson_util_test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -503,8 +511,12 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 bson_util_test_SOURCES = bson_util_test.c $(top_builddir)/src/bson_util.c
-bson_util_test_CFLAGS = -I../src @CHECK_CFLAGS@
+bson_util_test_CFLAGS = -Wall -I../src @CHECK_CFLAGS@
 bson_util_test_LDADD = @CHECK_LIBS@
+bson_object_test_SOURCES = bson_object_test.c
+bson_object_test_CFLAGS = -Wall -I../src @CHECK_CFLAGS@
+bson_object_test_LDADD = $(top_builddir)/src/libbson.la @CHECK_LIBS@
+bson_object_test_LDFLAGS = -static
 all: all-am
 
 .SUFFIXES:
@@ -548,6 +560,10 @@ clean-checkPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+bson_object_test$(EXEEXT): $(bson_object_test_OBJECTS) $(bson_object_test_DEPENDENCIES) $(EXTRA_bson_object_test_DEPENDENCIES) 
+	@rm -f bson_object_test$(EXEEXT)
+	$(AM_V_CCLD)$(bson_object_test_LINK) $(bson_object_test_OBJECTS) $(bson_object_test_LDADD) $(LIBS)
+
 bson_util_test$(EXEEXT): $(bson_util_test_OBJECTS) $(bson_util_test_DEPENDENCIES) $(EXTRA_bson_util_test_DEPENDENCIES) 
 	@rm -f bson_util_test$(EXEEXT)
 	$(AM_V_CCLD)$(bson_util_test_LINK) $(bson_util_test_OBJECTS) $(bson_util_test_LDADD) $(LIBS)
@@ -558,6 +574,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bson_object_test-bson_object_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bson_util_test-bson_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bson_util_test-bson_util_test.Po@am__quote@
 
@@ -581,6 +598,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+bson_object_test-bson_object_test.o: bson_object_test.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_object_test_CFLAGS) $(CFLAGS) -MT bson_object_test-bson_object_test.o -MD -MP -MF $(DEPDIR)/bson_object_test-bson_object_test.Tpo -c -o bson_object_test-bson_object_test.o `test -f 'bson_object_test.c' || echo '$(srcdir)/'`bson_object_test.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bson_object_test-bson_object_test.Tpo $(DEPDIR)/bson_object_test-bson_object_test.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='bson_object_test.c' object='bson_object_test-bson_object_test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_object_test_CFLAGS) $(CFLAGS) -c -o bson_object_test-bson_object_test.o `test -f 'bson_object_test.c' || echo '$(srcdir)/'`bson_object_test.c
+
+bson_object_test-bson_object_test.obj: bson_object_test.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_object_test_CFLAGS) $(CFLAGS) -MT bson_object_test-bson_object_test.obj -MD -MP -MF $(DEPDIR)/bson_object_test-bson_object_test.Tpo -c -o bson_object_test-bson_object_test.obj `if test -f 'bson_object_test.c'; then $(CYGPATH_W) 'bson_object_test.c'; else $(CYGPATH_W) '$(srcdir)/bson_object_test.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bson_object_test-bson_object_test.Tpo $(DEPDIR)/bson_object_test-bson_object_test.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='bson_object_test.c' object='bson_object_test-bson_object_test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_object_test_CFLAGS) $(CFLAGS) -c -o bson_object_test-bson_object_test.obj `if test -f 'bson_object_test.c'; then $(CYGPATH_W) 'bson_object_test.c'; else $(CYGPATH_W) '$(srcdir)/bson_object_test.c'; fi`
 
 bson_util_test-bson_util_test.o: bson_util_test.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -MT bson_util_test-bson_util_test.o -MD -MP -MF $(DEPDIR)/bson_util_test-bson_util_test.Tpo -c -o bson_util_test-bson_util_test.o `test -f 'bson_util_test.c' || echo '$(srcdir)/'`bson_util_test.c
@@ -812,6 +843,13 @@ recheck: all $(check_PROGRAMS)
 bson_util_test.log: bson_util_test$(EXEEXT)
 	@p='bson_util_test$(EXEEXT)'; \
 	b='bson_util_test'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+bson_object_test.log: bson_object_test$(EXEEXT)
+	@p='bson_object_test$(EXEEXT)'; \
+	b='bson_object_test'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
