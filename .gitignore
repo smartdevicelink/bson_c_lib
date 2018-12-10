@@ -2,6 +2,8 @@
 *.so
 *.la
 *.lo
+*.log
+*.trs
 sample
 Makefile
 .deps/
@@ -10,3 +12,4 @@ Makefile
 /config.*
 /libtool
 /stamp-h1
+/test/bson_util_test

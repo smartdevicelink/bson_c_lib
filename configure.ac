@@ -53,4 +53,12 @@ AM_CONDITIONAL(
 	[BUILD_LUA], 
 	[test x$with_lua = xyes])
 
-AC_OUTPUT(Makefile src/Makefile src/emhashmap/Makefile lua/Makefile)
+# Note: requires libcheck installed with pkg-config file (.pc)
+PKG_CHECK_MODULES(CHECK, [check], [HAVE_LIBCHECK=1], [HAVE_LIBCHECK=0])
+
+#AM_PATH_CHECK(,[have_check="yes"],
+#	AC_MSG_WARN([Check not found; cannot run unit tests!])
+#	[have_check="no"])
+#AM_CONDITIONAL(HAVE_CHECK, test x"$have_check" = "xyes")
+
+AC_OUTPUT(Makefile src/Makefile src/emhashmap/Makefile lua/Makefile test/Makefile)

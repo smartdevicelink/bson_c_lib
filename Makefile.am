@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = src
+SUBDIRS = src test
 if BUILD_LUA
 SUBDIRS += lua
 endif 
