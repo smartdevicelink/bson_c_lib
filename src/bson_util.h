@@ -88,6 +88,21 @@ void write_int64_le(uint8_t *bytes, int64_t value, size_t *position);
 void write_double_le(uint8_t *bytes, double value, size_t *position);
 
 /*
+  @brief Read 1-byte value from given buffer and return number of bytes read.
+         Update "data" and "data_size" parameters on success.
+
+  @param output - Pointer to a uint8_t value in which the output is stored.
+  @param data - Pointer to the byte buffer from which to read. On success, this
+                 value will be advanced past the value that was read.
+  @param data_size - Pointer to a value that indicates the size of data in the
+                     byte buffer. On success, this value will be decreased to
+                     indicate the remaining data size in the buffer.
+
+  @return - 1 on success, 0 on failure.
+*/
+size_t read_byte_len(uint8_t *output, const uint8_t **data, size_t *data_size);
+
+/*
   @brief Read a little endian 32-bit integer value from a given buffer
 
   @param bytes - Pointer to the byte buffer from which to read, 
@@ -96,6 +111,23 @@ void write_double_le(uint8_t *bytes, double value, size_t *position);
   @return - The value that was read from the buffer
 */
 int32_t read_int32_le(uint8_t **bytes);
+
+/*
+  @brief Read a little endian 32-bit integer value from given buffer and return
+         number of bytes read. Update "data" and "data_size" parameters on
+         success.
+
+  @param output - Pointer to a int32_t value in which the output is stored.
+  @param data - Pointer to the byte buffer from which to read. On success, this
+                 value will be advanced past the value that was read.
+  @param data_size - Pointer to a value that indicates the size of data in the
+                     byte buffer. On success, this value will be decreased to
+                     indicate the remaining data size in the buffer.
+
+  @return - 4 on success, 0 on failure.
+*/
+size_t read_int32_le_len(int32_t *output, const uint8_t **data, size_t *data_size);
+
 /*
   @brief Read a little endian 64-bit integer value from a given buffer
 
@@ -105,6 +137,23 @@ int32_t read_int32_le(uint8_t **bytes);
   @return - The value that was read from the buffer
 */
 int64_t read_int64_le(uint8_t **bytes);
+
+/*
+  @brief Read a little endian 64-bit integer value from given buffer and return
+         number of bytes read. Update "data" and "data_size" parameters on
+         success.
+
+  @param output - Pointer to a int64_t value in which the output is stored.
+  @param data - Pointer to the byte buffer from which to read. On success, this
+                 value will be advanced past the value that was read.
+  @param data_size - Pointer to a value that indicates the size of data in the
+                     byte buffer. On success, this value will be decreased to
+                     indicate the remaining data size in the buffer.
+
+  @return - 8 on success, 0 on failure.
+*/
+size_t read_int64_le_len(int64_t *output, const uint8_t **data, size_t *data_size);
+
 /*
   @brief Read a little endian 64-bit floating point value from a given buffer
 
@@ -114,6 +163,40 @@ int64_t read_int64_le(uint8_t **bytes);
   @return - The value that was read from the buffer
 */
 double read_double_le(uint8_t **bytes);
+
+/*
+  @brief Read a little endian 64-bit floating point value from given buffer and
+         return number of bytes read. Update "data" and "data_size" parameters
+         on success.
+
+  @param output - Pointer to a double value in which the output is stored.
+  @param data - Pointer to the byte buffer from which to read. On success, this
+                 value will be advanced past the value that was read.
+  @param data_size - Pointer to a value that indicates the size of data in the
+                     byte buffer. On success, this value will be decreased to
+                     indicate the remaining data size in the buffer.
+
+  @return - 8 on success, 0 on failure.
+*/
+size_t read_double_le_len(double *output, const uint8_t **data, size_t *data_size);
+
+/*
+  @brief Read a string from given buffer and return number of bytes read.
+         Update "data" and "data_size" parameters on success.
+
+  @param output - Pointer to a char* value. On success, the value is updated to
+                  point to a malloc()-ed buffer that stores the output.
+                  Caller must call free() to release the buffer after use.
+  @param data - Pointer to the byte buffer from which to read. On success, this
+                 value will be advanced past the value that was read.
+  @param data_size - Pointer to a value that indicates the size of data in the
+                     byte buffer. On success, this value will be decreased to
+                     indicate the remaining data size in the buffer.
+
+  @return - On success, a positive number of bytes read (including last '\0')
+            is returned. On failure, 0 is returned.
+*/
+size_t read_string_len(char **output, const uint8_t **data, size_t *data_size);
 
 /*
   @brief Convert the give UTF-8 string into a byte array

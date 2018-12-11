@@ -138,6 +138,7 @@ uint8_t *bson_array_to_bytes(BsonArray *array) {
   return bytes;
 }
 
+// DEPRECATED: use bson_array_from_bytes_len() instead
 BsonArray bson_array_from_bytes(uint8_t *data) {
   uint8_t *current = data;
   int32_t size = read_int32_le(&current);
@@ -205,6 +206,144 @@ BsonArray bson_array_from_bytes(uint8_t *data) {
     printf("Unexpected parsed array size. Expected %i, got %i\n", (int) size, (int)(current - data));
   }
   return array;
+}
+
+size_t bson_array_from_bytes_len(BsonArray *output, const uint8_t *data, size_t data_size) {
+  const uint8_t *current = data;
+  size_t remain_bytes = data_size;
+  int32_t size = 0;
+  bool parse_error = false;
+  size_t ret;
+
+  if (output == NULL || data == NULL) {
+    return 0;
+  }
+  ret = read_int32_le_len(&size, &current, &remain_bytes);
+  if (ret == 0) {
+    return 0;
+  }
+  if (size > data_size) {
+    printf("Unexpected array length %i, data is only %i bytes\n", (int)size, (int)data_size);
+    return 0;
+  }
+
+  uint8_t type;
+  ret = read_byte_len(&type, &current, &remain_bytes);
+  if (ret == 0) {
+    return 0;
+  }
+
+  BsonArray array;
+  bson_array_initialize(&array, 10);
+
+  while (type != DOCUMENT_END) {
+    char *key = NULL;
+    ret = read_string_len(&key, &current, &remain_bytes);
+    if (ret == 0) {
+      parse_error = true;
+      break;
+    }
+    ret = 0;
+
+    switch ((element_type)type) {
+      case TYPE_DOCUMENT: {
+        BsonObject obj;
+        ret = bson_object_from_bytes_len(&obj, current, remain_bytes);
+        if (ret > 0) {
+          bson_array_add_object(&array, &obj);
+          current += ret;
+          remain_bytes -= ret;
+        }
+        break;
+      }
+      case TYPE_ARRAY: {
+        BsonArray subArray;
+        ret = bson_array_from_bytes_len(&subArray, current, remain_bytes);
+        if (ret > 0) {
+          bson_array_add_array(&array, &subArray);
+          current += ret;
+          remain_bytes -= ret;
+        }
+        break;
+      }
+      case TYPE_INT32: {
+        int32_t value = 0;
+        ret = read_int32_le_len(&value, &current, &remain_bytes);
+        if (ret > 0) {
+          bson_array_add_int32(&array, value);
+        }
+        break;
+      }
+      case TYPE_INT64: {
+        int64_t value = 0;
+        ret = read_int64_le_len(&value, &current, &remain_bytes);
+        if (ret > 0) {
+          bson_array_add_int64(&array, value);
+        }
+        break;
+      }
+      case TYPE_STRING: {
+        // Buffer length is read first
+        int32_t buffer_length = 0;
+        ret = read_int32_le_len(&buffer_length, &current, &remain_bytes);
+        if (ret > 0) {
+          if (buffer_length <= remain_bytes) {
+            char *string_val = byte_array_to_bson_string((uint8_t*)current, (size_t)buffer_length - 1);
+            bson_array_add_string(&array, string_val);
+            free(string_val);
+            current += buffer_length;
+            remain_bytes -= buffer_length;
+          } else {
+            ret = 0;
+          }
+        }
+        break;
+      }
+      case TYPE_DOUBLE: {
+        double value = 0.0;
+        ret = read_double_le_len(&value, &current, &remain_bytes);
+        if (ret > 0) {
+          bson_array_add_double(&array, value);
+        }
+        break;
+      }
+      case TYPE_BOOLEAN: {
+        uint8_t value = 0;
+        ret = read_byte_len(&value, &current, &remain_bytes);
+        if (ret > 0) {
+          bson_array_add_bool(&array, value);
+        }
+        break;
+      }
+      default: {
+        printf("Unrecognized BSON type: %i\n", type);
+        ret = 0;
+      }
+    }
+    free(key);
+
+    if (ret == 0) {
+      parse_error = true;
+      break;
+    }
+
+    ret = read_byte_len(&type, &current, &remain_bytes);
+    if (ret == 0) {
+      parse_error = true;
+      break;
+    }
+  }
+
+  if (parse_error) {
+    bson_array_deinitialize(&array);
+    return 0;
+  }
+
+  if (data + size != current) {
+    printf("Unexpected parsed array size. Expected %i, got %i\n", (int)size, (int)(current - data));
+  }
+  *output = array;
+  return data_size - remain_bytes;
 }
 
 char *bson_array_to_string(BsonArray *array, char *out) {
