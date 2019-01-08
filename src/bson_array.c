@@ -140,71 +140,11 @@ uint8_t *bson_array_to_bytes(BsonArray *array) {
 
 // DEPRECATED: use bson_array_from_bytes_len() instead
 BsonArray bson_array_from_bytes(uint8_t *data) {
-  uint8_t *current = data;
-  int32_t size = read_int32_le(&current);
+  int32_t size = read_int32_le(&data);
+  data -= SIZE_INT32;
+
   BsonArray array;
-  bson_array_initialize(&array, 10);
-  uint8_t type = *current;
-  current++;
-  while (type != DOCUMENT_END) {
-    char *key = byte_array_to_string(current);
-    current += strlen(key) + 1;
-
-    switch ((element_type)type) {
-      case TYPE_DOCUMENT: {
-        BsonObject obj = bson_object_from_bytes(current);
-        bson_array_add_object(&array, &obj);
-        current += bson_object_size(&obj);
-        break;
-      }
-      case TYPE_ARRAY: {
-        BsonArray subArray = bson_array_from_bytes(current);
-        bson_array_add_array(&array, &subArray);
-        current += bson_array_size(&subArray);
-        break;
-      }
-      case TYPE_INT32: {
-        int32_t value = read_int32_le(&current);
-        bson_array_add_int32(&array, value);
-        break;
-      }
-      case TYPE_INT64: {
-        int64_t value = read_int64_le(&current);
-        bson_array_add_int64(&array, value);
-        break;
-      }
-      case TYPE_STRING: {
-        //String length is read first
-        int32_t stringLength = read_int32_le(&current) - 1;
-
-        char *stringVal = byte_array_to_bson_string(current, (size_t)stringLength);
-        bson_array_add_string(&array, stringVal);
-        free(stringVal);
-        current += stringLength + 1;
-        break;
-      }
-      case TYPE_DOUBLE: {
-        double value = read_double_le(&current);
-        bson_array_add_double(&array, value);
-        break;
-      }
-      case TYPE_BOOLEAN: {
-        bson_array_add_bool(&array, *current);
-        current++;
-        break;
-      }
-      default: {
-        printf("Unrecognized BSON type: %i\n", type);
-      }
-    }
-    free(key);
-    type = *current;
-    current++;
-  }
-
-  if (data + size != current) {
-    printf("Unexpected parsed array size. Expected %i, got %i\n", (int) size, (int)(current - data));
-  }
+  bson_array_from_bytes_len(&array, data, size);
   return array;
 }
 

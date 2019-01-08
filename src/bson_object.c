@@ -161,71 +161,11 @@ uint8_t *bson_object_to_bytes(BsonObject *obj) {
 
 // DEPRECATED: use bson_object_from_bytes_len() instead
 BsonObject bson_object_from_bytes(uint8_t *data) {
-  uint8_t *current = data;
-  int32_t size = read_int32_le(&current);
+  int32_t size = read_int32_le(&data);
+  data -= SIZE_INT32;
+
   BsonObject obj;
-  bson_object_initialize_default(&obj);
-  uint8_t type = *current;
-  current++;
-  while (type != DOCUMENT_END) {
-    char *key = byte_array_to_string(current);
-    current += strlen(key) + 1;
-
-    switch ((element_type)type) {
-      case TYPE_DOCUMENT: {
-        BsonObject subObject = bson_object_from_bytes(current);
-        bson_object_put_object(&obj, key, &subObject);
-        current += bson_object_size(&subObject);
-        break;
-      }
-      case TYPE_ARRAY: {
-        BsonArray array = bson_array_from_bytes(current);
-        bson_object_put_array(&obj, key, &array);
-        current += bson_array_size(&array);
-        break;
-      }
-      case TYPE_INT32: {
-        int32_t value = read_int32_le(&current);
-        bson_object_put_int32(&obj, key, value);
-        break;
-      }
-      case TYPE_INT64: {
-        int64_t value = read_int64_le(&current);
-        bson_object_put_int64(&obj, key, value);
-        break;
-      }
-      case TYPE_STRING: {
-        //String length is read first
-        int32_t stringLength = read_int32_le(&current) - 1;
-
-        char *stringVal = byte_array_to_bson_string(current, (size_t)stringLength);
-        bson_object_put_string(&obj, key, stringVal);
-        free(stringVal);
-        current += stringLength + 1;
-        break;
-      }
-      case TYPE_DOUBLE: {
-        double value = read_double_le(&current);
-        bson_object_put_double(&obj, key, value);
-        break;
-      }
-      case TYPE_BOOLEAN: {
-        bson_object_put_bool(&obj, key, *current);
-        current++;
-        break;
-      }
-      default: {
-        printf("Unrecognized BSON type: %i\n", type);
-      }
-    }
-    free(key);
-    type = *current;
-    current++;
-  }
-
-  if (data + size != current) {
-    printf("Unexpected parsed object size. Expected %i, got %i\n", (int) size, (int)(current - data));
-  }
+  bson_object_from_bytes_len(&obj, data, size);
   return obj;
 }
 
