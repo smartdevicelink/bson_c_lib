@@ -503,7 +503,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 bson_util_test_SOURCES = bson_util_test.c $(top_builddir)/src/bson_util.c
-bson_util_test_CFLAGS = -I../src @CHECK_CFLAGS@
+bson_util_test_CFLAGS = -Wall -I../src @CHECK_CFLAGS@
 bson_util_test_LDADD = @CHECK_LIBS@
 all: all-am
 

@@ -640,6 +640,8 @@ CHECK_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
+BUILD_TESTS_FALSE
+BUILD_TESTS_TRUE
 BUILD_LUA_FALSE
 BUILD_LUA_TRUE
 LIBOBJS
@@ -771,6 +773,7 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 with_lua_wrapper
+with_tests
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1440,6 +1443,7 @@ Optional Packages:
   --with-sysroot[=DIR]    Search for dependent libraries within DIR (or the
                           compiler's sysroot if not specified).
   --with-lua-wrapper      Build Lua wrapper library
+  --with-tests            Build unit tests (requires libcheck)
 
 Some influential environment variables:
   CC          C compiler command
@@ -13223,7 +13227,33 @@ else
 fi
 
 
-# Note: requires libcheck installed with pkg-config file (.pc)
+
+# Check whether --with-tests was given.
+if test "${with_tests+set}" = set; then :
+  withval=$with_tests; case ${withval} in #(
+  yes) :
+    with_tests=yes ;; #(
+  no) :
+    with_tests=no ;; #(
+  *) :
+    as_fn_error $? "invalid value (${withval}) for --with-tests
+		" "$LINENO" 5
+	 ;;
+esac
+else
+  with_tests=no
+fi
+
+
+ if test x$with_tests = xyes; then
+  BUILD_TESTS_TRUE=
+  BUILD_TESTS_FALSE='#'
+else
+  BUILD_TESTS_TRUE='#'
+  BUILD_TESTS_FALSE=
+fi
+
+
 
 
 
@@ -13344,6 +13374,8 @@ $as_echo "no" >&6; }
 		PKG_CONFIG=""
 	fi
 fi
+if test -z "$BUILD_TESTS_TRUE"; then :
+  # Note: requires libcheck installed with pkg-config file (.pc)
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CHECK" >&5
@@ -13403,23 +13435,39 @@ fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$CHECK_PKG_ERRORS" >&5
 
-	HAVE_LIBCHECK=0
+	as_fn_error $? "Package requirements (check) were not met:
+
+$CHECK_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables CHECK_CFLAGS
+and CHECK_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-	HAVE_LIBCHECK=0
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables CHECK_CFLAGS
+and CHECK_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
 else
 	CHECK_CFLAGS=$pkg_cv_CHECK_CFLAGS
 	CHECK_LIBS=$pkg_cv_CHECK_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-	HAVE_LIBCHECK=1
-fi
 
-#AM_PATH_CHECK(,[have_check="yes"],
-#	AC_MSG_WARN([Check not found; cannot run unit tests!])
-#	[have_check="no"])
-#AM_CONDITIONAL(HAVE_CHECK, test x"$have_check" = "xyes")
+fi
+fi
 
 ac_config_files="$ac_config_files Makefile src/Makefile src/emhashmap/Makefile lua/Makefile test/Makefile"
 
@@ -13562,6 +13610,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BUILD_LUA_TRUE}" && test -z "${BUILD_LUA_FALSE}"; then
   as_fn_error $? "conditional \"BUILD_LUA\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_TESTS_TRUE}" && test -z "${BUILD_TESTS_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_TESTS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
