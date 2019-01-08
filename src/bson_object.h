@@ -101,12 +101,12 @@ BsonObject bson_object_from_bytes(uint8_t *data);
   @param output - Pointer to an uninitialized BsonObject. On success, it is
                   initialized and stores converted data.
   @param data - Byte buffer that contains BSON data to be parsed
-  @param data_size - Number of bytes of the data stored in the byte buffer
+  @param dataSize - Number of bytes of the data stored in the byte buffer
 
   @return - On success, a positive number indicating number of bytes consumed
             is returned. On error, 0 is returned.
 */
-size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_t data_size);
+size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_t dataSize);
 
 /*
   @brief Get a JSON string representation of a BSON object

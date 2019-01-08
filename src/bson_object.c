@@ -229,27 +229,27 @@ BsonObject bson_object_from_bytes(uint8_t *data) {
   return obj;
 }
 
-size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_t data_size) {
+size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_t dataSize) {
   const uint8_t *current = data;
-  size_t remain_bytes = data_size;
+  size_t remainBytes = dataSize;
   int32_t size = 0;
-  bool parse_error = false;
+  bool parseError = false;
   size_t ret;
 
   if (output == NULL || data == NULL) {
     return 0;
   }
-  ret = read_int32_le_len(&size, &current, &remain_bytes);
+  ret = read_int32_le_len(&size, &current, &remainBytes);
   if (ret == 0) {
     return 0;
   }
-  if (size > data_size) {
-    printf("Unexpected object length %i, data is only %i bytes\n", (int)size, (int)data_size);
+  if (size > dataSize) {
+    printf("Unexpected object length %i, data is only %i bytes\n", (int)size, (int)dataSize);
     return 0;
   }
 
   uint8_t type;
-  ret = read_byte_len(&type, &current, &remain_bytes);
+  ret = read_byte_len(&type, &current, &remainBytes);
   if (ret == 0) {
     return 0;
   }
@@ -259,9 +259,9 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
 
   while (type != DOCUMENT_END) {
     char *key = NULL;
-    ret = read_string_len(&key, &current, &remain_bytes);
+    ret = read_string_len(&key, &current, &remainBytes);
     if (ret == 0) {
-      parse_error = true;
+      parseError = true;
       break;
     }
     ret = 0;
@@ -269,27 +269,27 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
     switch ((element_type)type) {
       case TYPE_DOCUMENT: {
         BsonObject subObject;
-        ret = bson_object_from_bytes_len(&subObject, current, remain_bytes);
+        ret = bson_object_from_bytes_len(&subObject, current, remainBytes);
         if (ret > 0) {
           bson_object_put_object(&obj, key, &subObject);
           current += ret;
-          remain_bytes -= ret;
+          remainBytes -= ret;
         }
         break;
       }
       case TYPE_ARRAY: {
         BsonArray array;
-        ret = bson_array_from_bytes_len(&array, current, remain_bytes);
+        ret = bson_array_from_bytes_len(&array, current, remainBytes);
         if (ret > 0) {
           bson_object_put_array(&obj, key, &array);
           current += ret;
-          remain_bytes -= ret;
+          remainBytes -= ret;
         }
         break;
       }
       case TYPE_INT32: {
         int32_t value = 0;
-        ret = read_int32_le_len(&value, &current, &remain_bytes);
+        ret = read_int32_le_len(&value, &current, &remainBytes);
         if (ret > 0) {
           bson_object_put_int32(&obj, key, value);
         }
@@ -297,7 +297,7 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
       }
       case TYPE_INT64: {
         int64_t value = 0;
-        ret = read_int64_le_len(&value, &current, &remain_bytes);
+        ret = read_int64_le_len(&value, &current, &remainBytes);
         if (ret > 0) {
           bson_object_put_int64(&obj, key, value);
         }
@@ -305,15 +305,15 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
       }
       case TYPE_STRING: {
         // Buffer length is read first
-        int32_t buffer_length = 0;
-        ret = read_int32_le_len(&buffer_length, &current, &remain_bytes);
+        int32_t bufferLength = 0;
+        ret = read_int32_le_len(&bufferLength, &current, &remainBytes);
         if (ret > 0) {
-          if (buffer_length <= remain_bytes) {
-            char *string_val = byte_array_to_bson_string((uint8_t*)current, (size_t)buffer_length - 1);
-            bson_object_put_string(&obj, key, string_val);
-            free(string_val);
-            current += buffer_length;
-            remain_bytes -= buffer_length;
+          if (bufferLength <= remainBytes) {
+            char *stringVal = byte_array_to_bson_string((uint8_t*)current, (size_t)bufferLength - 1);
+            bson_object_put_string(&obj, key, stringVal);
+            free(stringVal);
+            current += bufferLength;
+            remainBytes -= bufferLength;
           } else {
             ret = 0;
           }
@@ -322,7 +322,7 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
       }
       case TYPE_DOUBLE: {
         double value = 0.0;
-        ret = read_double_le_len(&value, &current, &remain_bytes);
+        ret = read_double_le_len(&value, &current, &remainBytes);
         if (ret > 0) {
           bson_object_put_double(&obj, key, value);
         }
@@ -330,7 +330,7 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
       }
       case TYPE_BOOLEAN: {
         uint8_t value = 0;
-        ret = read_byte_len(&value, &current, &remain_bytes);
+        ret = read_byte_len(&value, &current, &remainBytes);
         if (ret > 0) {
           bson_object_put_bool(&obj, key, value);
         }
@@ -344,18 +344,18 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
     free(key);
 
     if (ret == 0) {
-      parse_error = true;
+      parseError = true;
       break;
     }
 
-    ret = read_byte_len(&type, &current, &remain_bytes);
+    ret = read_byte_len(&type, &current, &remainBytes);
     if (ret == 0) {
-      parse_error = true;
+      parseError = true;
       break;
     }
   }
 
-  if (parse_error) {
+  if (parseError) {
     bson_object_deinitialize(&obj);
     return 0;
   }
@@ -364,7 +364,7 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
     printf("Unexpected parsed object size. Expected %i, got %i\n", (int)size, (int)(current - data));
   }
   *output = obj;
-  return data_size - remain_bytes;
+  return dataSize - remainBytes;
 }
 
 char *bson_object_to_string(BsonObject *obj, char *out) {
