@@ -30,16 +30,6 @@ void write_double_le(uint8_t *bytes, double value, size_t *position) {
   }
 }
 
-size_t read_byte_len(uint8_t *output, const uint8_t **data, size_t *dataSize) {
-  if (*dataSize < 1) {
-    return 0;
-  }
-  *output = **data;
-  (*data)++;
-  *dataSize -= 1;
-  return 1;
-}
-
 int32_t read_int32_le(uint8_t **bytes) {
   int32_t value = 0;
   int i = 0;
@@ -51,21 +41,6 @@ int32_t read_int32_le(uint8_t **bytes) {
   return value;
 }
 
-size_t read_int32_le_len(int32_t *output, const uint8_t **data, size_t *dataSize) {
-  if (*dataSize < SIZE_INT32) {
-    return 0;
-  }
-  *output = 0;
-  int i = 0;
-  for (i = SIZE_INT32 - 1; i >= 0; i--) {
-    *output <<= 8;
-    *output += (*data)[i];
-  }
-  (*data) += SIZE_INT32;
-  *dataSize -= SIZE_INT32;
-  return SIZE_INT32;
-}
-
 int64_t read_int64_le(uint8_t **bytes) {
   int64_t value = 0;
   int i = 0;
@@ -75,21 +50,6 @@ int64_t read_int64_le(uint8_t **bytes) {
   }
   (*bytes) += SIZE_INT64;
   return value;
-}
-
-size_t read_int64_le_len(int64_t *output, const uint8_t **data, size_t *dataSize) {
-  if (*dataSize < SIZE_INT64) {
-    return 0;
-  }
-  *output = 0;
-  int i = 0;
-  for (i = SIZE_INT64 - 1; i >= 0; i--) {
-    *output <<= 8;
-    *output += (*data)[i];
-  }
-  (*data) += SIZE_INT64;
-  *dataSize -= SIZE_INT64;
-  return SIZE_INT64;
 }
 
 double read_double_le(uint8_t **bytes) {
@@ -106,27 +66,6 @@ double read_double_le(uint8_t **bytes) {
   }
   (*bytes) += SIZE_DOUBLE;
   return unionVal.value;
-}
-
-size_t read_double_le_len(double *output, const uint8_t **data, size_t *dataSize) {
-  if (*dataSize < SIZE_DOUBLE) {
-    return 0;
-  }
-  union doubleUnion_t {
-    double value;
-    uint64_t intValue;
-  };
-  union doubleUnion_t unionVal;
-  unionVal.intValue = 0;
-  int i = 0;
-  for (i = SIZE_DOUBLE - 1; i >= 0; i--) {
-    unionVal.intValue <<= 8;
-    unionVal.intValue += (*data)[i];
-  }
-  *output = unionVal.value;
-  (*data) += SIZE_DOUBLE;
-  *dataSize -= SIZE_DOUBLE;
-  return SIZE_DOUBLE;
 }
 
 size_t read_string_len(char **output, const uint8_t **data, size_t *dataSize) {

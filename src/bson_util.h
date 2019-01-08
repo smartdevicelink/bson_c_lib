@@ -88,21 +88,6 @@ void write_int64_le(uint8_t *bytes, int64_t value, size_t *position);
 void write_double_le(uint8_t *bytes, double value, size_t *position);
 
 /*
-  @brief Read 1-byte value from given buffer and return number of bytes read.
-         Update "data" and "dataSize" parameters on success.
-
-  @param output - Pointer to a uint8_t value in which the output is stored.
-  @param data - Pointer to the byte buffer from which to read. On success, this
-                 value will be advanced past the value that was read.
-  @param dataSize - Pointer to a value that indicates the size of data in the
-                    byte buffer. On success, this value will be decreased to
-                    indicate the remaining data size in the buffer.
-
-  @return - 1 on success, 0 on failure.
-*/
-size_t read_byte_len(uint8_t *output, const uint8_t **data, size_t *dataSize);
-
-/*
   @brief Read a little endian 32-bit integer value from a given buffer
 
   @param bytes - Pointer to the byte buffer from which to read, 
@@ -111,23 +96,6 @@ size_t read_byte_len(uint8_t *output, const uint8_t **data, size_t *dataSize);
   @return - The value that was read from the buffer
 */
 int32_t read_int32_le(uint8_t **bytes);
-
-/*
-  @brief Read a little endian 32-bit integer value from given buffer and return
-         number of bytes read. Update "data" and "dataSize" parameters on
-         success.
-
-  @param output - Pointer to a int32_t value in which the output is stored.
-  @param data - Pointer to the byte buffer from which to read. On success, this
-                 value will be advanced past the value that was read.
-  @param dataSize - Pointer to a value that indicates the size of data in the
-                    byte buffer. On success, this value will be decreased to
-                    indicate the remaining data size in the buffer.
-
-  @return - 4 on success, 0 on failure.
-*/
-size_t read_int32_le_len(int32_t *output, const uint8_t **data, size_t *dataSize);
-
 /*
   @brief Read a little endian 64-bit integer value from a given buffer
 
@@ -137,23 +105,6 @@ size_t read_int32_le_len(int32_t *output, const uint8_t **data, size_t *dataSize
   @return - The value that was read from the buffer
 */
 int64_t read_int64_le(uint8_t **bytes);
-
-/*
-  @brief Read a little endian 64-bit integer value from given buffer and return
-         number of bytes read. Update "data" and "dataSize" parameters on
-         success.
-
-  @param output - Pointer to a int64_t value in which the output is stored.
-  @param data - Pointer to the byte buffer from which to read. On success, this
-                 value will be advanced past the value that was read.
-  @param dataSize - Pointer to a value that indicates the size of data in the
-                    byte buffer. On success, this value will be decreased to
-                    indicate the remaining data size in the buffer.
-
-  @return - 8 on success, 0 on failure.
-*/
-size_t read_int64_le_len(int64_t *output, const uint8_t **data, size_t *dataSize);
-
 /*
   @brief Read a little endian 64-bit floating point value from a given buffer
 
@@ -163,22 +114,6 @@ size_t read_int64_le_len(int64_t *output, const uint8_t **data, size_t *dataSize
   @return - The value that was read from the buffer
 */
 double read_double_le(uint8_t **bytes);
-
-/*
-  @brief Read a little endian 64-bit floating point value from given buffer and
-         return number of bytes read. Update "data" and "dataSize" parameters
-         on success.
-
-  @param output - Pointer to a double value in which the output is stored.
-  @param data - Pointer to the byte buffer from which to read. On success, this
-                 value will be advanced past the value that was read.
-  @param dataSize - Pointer to a value that indicates the size of data in the
-                    byte buffer. On success, this value will be decreased to
-                    indicate the remaining data size in the buffer.
-
-  @return - 8 on success, 0 on failure.
-*/
-size_t read_double_le_len(double *output, const uint8_t **data, size_t *dataSize);
 
 /*
   @brief Read a string from given buffer and return number of bytes read.

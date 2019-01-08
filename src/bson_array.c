@@ -155,23 +155,22 @@ size_t bson_array_from_bytes_len(BsonArray *output, const uint8_t *data, size_t 
   bool parseError = false;
   size_t ret;
 
-  if (output == NULL || data == NULL) {
+  if (output == NULL || data == NULL || dataSize < SIZE_INT32) {
     return 0;
   }
-  ret = read_int32_le_len(&size, &current, &remainBytes);
-  if (ret == 0) {
-    return 0;
-  }
+  size = read_int32_le((uint8_t **)&current);
+  remainBytes -= SIZE_INT32;
   if (size > dataSize) {
     printf("Unexpected array length %i, data is only %i bytes\n", (int)size, (int)dataSize);
     return 0;
   }
 
-  uint8_t type;
-  ret = read_byte_len(&type, &current, &remainBytes);
-  if (ret == 0) {
+  if (remainBytes < 1) {
     return 0;
   }
+  uint8_t type = *current;
+  current += 1;
+  remainBytes -= 1;
 
   BsonArray array;
   bson_array_initialize(&array, 10);
@@ -183,7 +182,6 @@ size_t bson_array_from_bytes_len(BsonArray *output, const uint8_t *data, size_t 
       parseError = true;
       break;
     }
-    ret = 0;
 
     switch ((element_type)type) {
       case TYPE_DOCUMENT: {
@@ -193,6 +191,8 @@ size_t bson_array_from_bytes_len(BsonArray *output, const uint8_t *data, size_t 
           bson_array_add_object(&array, &obj);
           current += ret;
           remainBytes -= ret;
+        } else {
+          parseError = true;
         }
         break;
       }
@@ -203,30 +203,35 @@ size_t bson_array_from_bytes_len(BsonArray *output, const uint8_t *data, size_t 
           bson_array_add_array(&array, &subArray);
           current += ret;
           remainBytes -= ret;
+        } else {
+          parseError = true;
         }
         break;
       }
-      case TYPE_INT32: {
-        int32_t value = 0;
-        ret = read_int32_le_len(&value, &current, &remainBytes);
-        if (ret > 0) {
+      case TYPE_INT32:
+        if (remainBytes >= SIZE_INT32) {
+          int32_t value = read_int32_le((uint8_t **)&current);
           bson_array_add_int32(&array, value);
+          remainBytes -= SIZE_INT32;
+        } else {
+          parseError = true;
         }
         break;
-      }
-      case TYPE_INT64: {
-        int64_t value = 0;
-        ret = read_int64_le_len(&value, &current, &remainBytes);
-        if (ret > 0) {
+      case TYPE_INT64:
+        if (remainBytes >= SIZE_INT64) {
+          int64_t value = read_int64_le((uint8_t **)&current);
           bson_array_add_int64(&array, value);
+          remainBytes -= SIZE_INT64;
+        } else {
+          parseError = true;
         }
         break;
-      }
-      case TYPE_STRING: {
+      case TYPE_STRING:
         // Buffer length is read first
-        int32_t bufferLength = 0;
-        ret = read_int32_le_len(&bufferLength, &current, &remainBytes);
-        if (ret > 0) {
+        if (remainBytes >= SIZE_INT32) {
+          int32_t bufferLength = read_int32_le((uint8_t **)&current);
+          remainBytes -= SIZE_INT32;
+
           if (bufferLength <= remainBytes) {
             char *stringVal = byte_array_to_bson_string((uint8_t*)current, (size_t)bufferLength - 1);
             bson_array_add_string(&array, stringVal);
@@ -234,41 +239,47 @@ size_t bson_array_from_bytes_len(BsonArray *output, const uint8_t *data, size_t 
             current += bufferLength;
             remainBytes -= bufferLength;
           } else {
-            ret = 0;
+            parseError = true;
           }
+        } else {
+          parseError = true;
         }
         break;
-      }
-      case TYPE_DOUBLE: {
-        double value = 0.0;
-        ret = read_double_le_len(&value, &current, &remainBytes);
-        if (ret > 0) {
+      case TYPE_DOUBLE:
+        if (remainBytes >= SIZE_DOUBLE) {
+          double value = read_double_le((uint8_t **)&current);
           bson_array_add_double(&array, value);
+          remainBytes -= SIZE_DOUBLE;
+        } else {
+          parseError = true;
         }
         break;
-      }
-      case TYPE_BOOLEAN: {
-        uint8_t value = 0;
-        ret = read_byte_len(&value, &current, &remainBytes);
-        if (ret > 0) {
+      case TYPE_BOOLEAN:
+        if (remainBytes >= 1) {
+          uint8_t value = *current;
           bson_array_add_bool(&array, value);
+          current += 1;
+          remainBytes -= 1;
+        } else {
+          parseError = true;
         }
         break;
-      }
       default: {
         printf("Unrecognized BSON type: %i\n", type);
-        ret = 0;
+        parseError = true;
       }
     }
     free(key);
 
-    if (ret == 0) {
-      parseError = true;
+    if (parseError) {
       break;
     }
 
-    ret = read_byte_len(&type, &current, &remainBytes);
-    if (ret == 0) {
+    if (remainBytes >= 1) {
+      type = *current;
+      current += 1;
+      remainBytes -= 1;
+    } else {
       parseError = true;
       break;
     }
