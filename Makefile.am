@@ -4,3 +4,6 @@ SUBDIRS = src
 if BUILD_LUA
 SUBDIRS += lua
 endif 
+if BUILD_TESTS
+SUBDIRS += test
+endif

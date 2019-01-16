@@ -42,7 +42,7 @@ int32_t read_int32_le(uint8_t **bytes) {
 }
 
 int64_t read_int64_le(uint8_t **bytes) {
-  int32_t value = 0;
+  int64_t value = 0;
   int i = 0;
   for (i = SIZE_INT64 - 1; i >= 0; i--) {
     value <<= 8;

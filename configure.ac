@@ -53,4 +53,31 @@ AM_CONDITIONAL(
 	[BUILD_LUA], 
 	[test x$with_lua = xyes])
 
-AC_OUTPUT(Makefile src/Makefile src/emhashmap/Makefile lua/Makefile)
+AC_ARG_WITH(
+	[tests],
+	[AS_HELP_STRING(
+		[--with-tests],
+		[Build unit tests (requires libcheck)]
+	)],
+	[AS_CASE(
+		${withval},
+		[yes],
+		[with_tests=yes],
+		[no],
+		[with_tests=no],
+		[AC_MSG_ERROR(
+			[invalid value (${withval}) for --with-tests]
+		)]
+	)],
+	[with_tests=no])
+
+AM_CONDITIONAL(
+	[BUILD_TESTS],
+	[test x$with_tests = xyes])
+
+AM_COND_IF(
+	[BUILD_TESTS],
+	# Note: requires libcheck installed with pkg-config file (.pc)
+	[PKG_CHECK_MODULES(CHECK, [check])])
+
+AC_OUTPUT(Makefile src/Makefile src/emhashmap/Makefile lua/Makefile test/Makefile)
