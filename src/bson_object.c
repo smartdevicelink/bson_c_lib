@@ -161,8 +161,8 @@ uint8_t *bson_object_to_bytes(BsonObject *obj) {
 
 // DEPRECATED: use bson_object_from_bytes_len() instead
 BsonObject bson_object_from_bytes(uint8_t *data) {
-  int32_t size = read_int32_le(&data);
-  data -= SIZE_INT32;
+  uint8_t *p = data;
+  int32_t size = read_int32_le(&p);
 
   BsonObject obj;
   bson_object_from_bytes_len(&obj, data, size);

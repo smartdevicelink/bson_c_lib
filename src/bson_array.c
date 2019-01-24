@@ -140,8 +140,8 @@ uint8_t *bson_array_to_bytes(BsonArray *array) {
 
 // DEPRECATED: use bson_array_from_bytes_len() instead
 BsonArray bson_array_from_bytes(uint8_t *data) {
-  int32_t size = read_int32_le(&data);
-  data -= SIZE_INT32;
+  uint8_t *p = data;
+  int32_t size = read_int32_le(&p);
 
   BsonArray array;
   bson_array_from_bytes_len(&array, data, size);
