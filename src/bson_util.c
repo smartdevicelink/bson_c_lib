@@ -68,6 +68,27 @@ double read_double_le(uint8_t **bytes) {
   return unionVal.value;
 }
 
+size_t read_string_len(char **output, const uint8_t **data, size_t *dataSize) {
+  size_t i = 0;
+  for (i = 0; i < *dataSize; i++) {
+    if ((*data)[i] == 0x00) {
+      break;
+    }
+  }
+  if (i == *dataSize) {
+    // '\0' is not found
+    return 0;
+  }
+
+  *output = byte_array_to_bson_string((uint8_t *)*data, i);
+
+  // add 1 since we also consumed '\0' at the end
+  size_t bytesRead = i + 1;
+  (*data) += bytesRead;
+  *dataSize -= bytesRead;
+  return bytesRead;
+}
+
 uint8_t *string_to_byte_array(char *stringVal) {
   size_t length = strlen(stringVal);
   uint8_t *bytes = malloc(length + 1);
