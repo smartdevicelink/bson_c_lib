@@ -104,13 +104,15 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1double(JNIEnv *env, jclass ty
 
 JNIEXPORT jboolean JNICALL
 Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1object(JNIEnv *env, jclass type,
-                                                                          jlong bsonRef,
-                                                                          jstring key_,
-                                                                          jbyteArray value_) {
+                                                          jlong bsonRef,
+                                                          jstring key_,
+                                                          jbyteArray value_) {
     const char *key = (*env)->GetStringUTFChars(env, key_, 0);
     jbyte *value = (*env)->GetByteArrayElements(env, value_, NULL);
+    jsize length = (*env)->GetArrayLength(env, value_);
 
-    BsonObject bsonFromBytes = bson_object_from_bytes((uint8_t*) value);
+    BsonObject bsonFromBytes;
+    size_t bytesRead = bson_object_from_bytes_len(&bsonFromBytes, (uint8_t*) value, (size_t) length);
     jboolean tf = (jboolean) bson_object_put_object((BsonObject*) bsonRef, key, &bsonFromBytes);
 
     (*env)->ReleaseStringUTFChars(env, key_, key);
@@ -121,11 +123,12 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1object(JNIEnv *env, jclass ty
 
 JNIEXPORT jlong JNICALL
 Java_com_livio_BSON_BsonEncoder_bson_1object_1from_1bytes(JNIEnv *env,
-                                                                          jobject instance,
-                                                                          jbyteArray data_) {
+                                                          jobject instance,
+                                                          jbyteArray data_) {
     jbyte *data = (*env)->GetByteArrayElements(env, data_, NULL);
+    jsize length = (*env)->GetArrayLength(env, data_);
 
-    bsonObject = bson_object_from_bytes((uint8_t *) data);
+    size_t bytesRead = bson_object_from_bytes_len(&bsonObject, (uint8_t *) data, (size_t) length);
 
     (*env)->ReleaseByteArrayElements(env, data_, data, 0);
 
