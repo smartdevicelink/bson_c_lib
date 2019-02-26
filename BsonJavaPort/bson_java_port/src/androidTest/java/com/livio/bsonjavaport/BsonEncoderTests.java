@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -80,6 +81,13 @@ public class BsonEncoderTests extends AndroidTestCase{
 
 		assert(compareHashMaps(testMapA, decodedMapA));
 		assert(compareHashMaps(testMapB, decodedMapB));
+	}
+
+	public void testDecodingRandomData(){
+		// Checking for proper handling of invalid data
+		byte[] randomBytes = new byte[200];
+		new Random().nextBytes(randomBytes);
+		HashMap<String, Object> decodedMap = BsonEncoder.decodeFromBytes(randomBytes);
 	}
 
 	private boolean compareHashMaps(HashMap<String,Object> testMap, HashMap<String,Object> obsvMap){
