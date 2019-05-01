@@ -1,8 +1,8 @@
 package com.livio.bsonjavaport;
 
-import android.test.AndroidTestCase;
-
 import com.livio.BSON.BsonEncoder;
+
+import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class BsonEncoderTests extends AndroidTestCase{
+public class BsonEncoderTests extends TestCase {
 
 	private HashMap<String, Object> testMapA;
 	private HashMap<String, Object> testMapB;
