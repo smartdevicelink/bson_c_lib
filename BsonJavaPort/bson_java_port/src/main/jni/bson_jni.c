@@ -2,6 +2,9 @@
 #include <jni.h>
 #include <syslog.h>
 
+jobject bson_object_to_hashmap(JNIEnv *env, BsonObject *bsonRef);
+jobject bson_array_to_list(JNIEnv *env, BsonArray *bsonRef);
+
 JNIEXPORT jlong JNICALL
 Java_com_livio_BSON_BsonEncoder_initializeBsonObject(JNIEnv *env, jclass type) {
 
@@ -274,15 +277,7 @@ Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1array(JNIEnv *env,
   return tf;
 }
 
-JNIEXPORT jobject JNICALL
-Java_com_livio_BSON_BsonEncoder_bson_1object_1get_1hashmap(JNIEnv *env,
-                                                           jclass type,
-                                                           jlong bsonRef) {
-  if (bsonRef == -1) {
-    syslog(LOG_CRIT, "Invalid BSON Object");
-    return (*env)->NewGlobalRef(env, NULL);
-  }
-
+jobject bson_object_to_hashmap(JNIEnv *env, BsonObject *bsonRef) {
   // initialize the HashMap class
   jclass mapClass = (*env)->FindClass(env, "java/util/HashMap");
 
@@ -296,82 +291,26 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1get_1hashmap(JNIEnv *env,
       env, mapClass, "put",
       "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
 
-  MapIterator it = bson_object_iterator((BsonObject *)bsonRef);
+  MapIterator it = bson_object_iterator(bsonRef);
 
   MapEntry *entry;
 
   while ((entry = emhashmap_iterator_next(&it)) != NULL) {
     jstring key = (*env)->NewStringUTF(env, entry->key);
     BsonElement *element = entry->value;
-    if (element->type == TYPE_ARRAY) {
+
+    if (element->type == TYPE_DOCUMENT) {
+      BsonObject *ref = (BsonObject *)element->value;
+
+      jobject obj = bson_object_to_hashmap(env, ref);
+
+      (*env)->CallObjectMethod(env, hashMap, put, key, obj);
+    } else if (element->type == TYPE_ARRAY) {
       BsonArray *array = (BsonArray *)element->value;
 
-      // initialize the ArrayList class
-      jclass listClass = (*env)->FindClass(env, "java/util/ArrayList");
+      jobject obj = bson_array_to_list(env, array);
 
-      jsize list_len = (jsize)array->count;
-
-      jmethodID initList =
-          (*env)->GetMethodID(env, listClass, "<init>", "(I)V");
-      jobject objList = (*env)->NewObject(env, listClass, initList, list_len);
-
-      // initialize the Add method of the class
-      jmethodID add =
-          (*env)->GetMethodID(env, listClass, "add", "(Ljava/lang/Object;)Z");
-
-      size_t i;
-      for (i = 0; i < array->count; i++) {
-        BsonElement *a_elmnt = bson_array_get(array, (size_t)i);
-        if (a_elmnt->type == TYPE_INT32) {
-          jint result = *(int32_t *)a_elmnt->value;
-
-          jclass intClass = (*env)->FindClass(env, "java/lang/Integer");
-          jmethodID intInit =
-              (*env)->GetMethodID(env, intClass, "<init>", "(I)V");
-          jobject obj = (*env)->NewObject(env, intClass, intInit, result);
-
-          (*env)->CallBooleanMethod(env, objList, add, obj);
-        } else if (a_elmnt->type == TYPE_INT64) {
-          jlong result = *(int64_t *)a_elmnt->value;
-
-          jclass longClass = (*env)->FindClass(env, "java/lang/Long");
-          jmethodID longInit =
-              (*env)->GetMethodID(env, longClass, "<init>", "(J)V");
-          jobject obj = (*env)->NewObject(env, longClass, longInit, result);
-
-          (*env)->CallBooleanMethod(env, objList, add, obj);
-        } else if (a_elmnt->type == TYPE_STRING) {
-          jstring obj = (*env)->NewStringUTF(env, (char *)a_elmnt->value);
-          (*env)->CallBooleanMethod(env, objList, add, obj);
-        } else if (a_elmnt->type == TYPE_BOOLEAN) {
-          bson_boolean bb = *(bson_boolean *)a_elmnt->value;
-          jboolean result = false;
-          if (bb == BOOLEAN_FALSE || bb == BOOLEAN_INVALID) {
-            result = false;
-          } else if (bb == BOOLEAN_TRUE) {
-            result = true;
-          }
-
-          jclass boolClass = (*env)->FindClass(env, "java/lang/Boolean");
-          jmethodID boolInit =
-              (*env)->GetMethodID(env, boolClass, "<init>", "(Z)V");
-          jobject obj = (*env)->NewObject(env, boolClass, boolInit, result);
-
-          (*env)->CallBooleanMethod(env, objList, add, obj);
-        } else if (a_elmnt->type == TYPE_DOUBLE) {
-          jdouble result = *(double *)a_elmnt->value;
-
-          jclass doubleClass = (*env)->FindClass(env, "java/lang/Double");
-          jmethodID doubleInit =
-              (*env)->GetMethodID(env, doubleClass, "<init>", "(D)V");
-          jobject obj = (*env)->NewObject(env, doubleClass, doubleInit, result);
-
-          (*env)->CallBooleanMethod(env, objList, add, obj);
-        }
-      }
-
-      (*env)->CallObjectMethod(env, hashMap, put, key, objList);
-
+      (*env)->CallObjectMethod(env, hashMap, put, key, obj);
     } else if (element->type == TYPE_INT32) {
       jint result = *(int32_t *)element->value;
 
@@ -420,4 +359,93 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1get_1hashmap(JNIEnv *env,
   }
 
   return hashMap;
+}
+
+jobject bson_array_to_list(JNIEnv *env, BsonArray *bsonRef) {
+  // initialize the ArrayList class
+  jclass listClass = (*env)->FindClass(env, "java/util/ArrayList");
+
+  jsize list_len = (jsize)bsonRef->count;
+
+  jmethodID initList = (*env)->GetMethodID(env, listClass, "<init>", "(I)V");
+  jobject list = (*env)->NewObject(env, listClass, initList, list_len);
+
+  // initialize the Add method of the class
+  jmethodID add =
+      (*env)->GetMethodID(env, listClass, "add", "(Ljava/lang/Object;)Z");
+
+  size_t i;
+  for (i = 0; i < bsonRef->count; i++) {
+    BsonElement *element = bson_array_get(bsonRef, (size_t)i);
+    if (element->type == TYPE_DOCUMENT) {
+      BsonObject *ref = (BsonObject *)element->value;
+
+      jobject obj = bson_object_to_hashmap(env, ref);
+
+      (*env)->CallBooleanMethod(env, list, add, obj);
+    } else if (element->type == TYPE_ARRAY) {
+      BsonArray *array = (BsonArray *)element->value;
+
+      jobject obj = bson_array_to_list(env, array);
+
+      (*env)->CallBooleanMethod(env, list, add, obj);
+    } else if (element->type == TYPE_INT32) {
+      jint result = *(int32_t *)element->value;
+
+      jclass intClass = (*env)->FindClass(env, "java/lang/Integer");
+      jmethodID intInit = (*env)->GetMethodID(env, intClass, "<init>", "(I)V");
+      jobject obj = (*env)->NewObject(env, intClass, intInit, result);
+
+      (*env)->CallBooleanMethod(env, list, add, obj);
+    } else if (element->type == TYPE_INT64) {
+      jlong result = *(int64_t *)element->value;
+
+      jclass longClass = (*env)->FindClass(env, "java/lang/Long");
+      jmethodID longInit =
+          (*env)->GetMethodID(env, longClass, "<init>", "(J)V");
+      jobject obj = (*env)->NewObject(env, longClass, longInit, result);
+
+      (*env)->CallBooleanMethod(env, list, add, obj);
+    } else if (element->type == TYPE_STRING) {
+      jstring obj = (*env)->NewStringUTF(env, (char *)element->value);
+      (*env)->CallBooleanMethod(env, list, add, obj);
+    } else if (element->type == TYPE_BOOLEAN) {
+      bson_boolean bb = *(bson_boolean *)element->value;
+      jboolean result = false;
+      if (bb == BOOLEAN_FALSE || bb == BOOLEAN_INVALID) {
+        result = false;
+      } else if (bb == BOOLEAN_TRUE) {
+        result = true;
+      }
+
+      jclass boolClass = (*env)->FindClass(env, "java/lang/Boolean");
+      jmethodID boolInit =
+          (*env)->GetMethodID(env, boolClass, "<init>", "(Z)V");
+      jobject obj = (*env)->NewObject(env, boolClass, boolInit, result);
+
+      (*env)->CallBooleanMethod(env, list, add, obj);
+    } else if (element->type == TYPE_DOUBLE) {
+      jdouble result = *(double *)element->value;
+
+      jclass doubleClass = (*env)->FindClass(env, "java/lang/Double");
+      jmethodID doubleInit =
+          (*env)->GetMethodID(env, doubleClass, "<init>", "(D)V");
+      jobject obj = (*env)->NewObject(env, doubleClass, doubleInit, result);
+
+      (*env)->CallBooleanMethod(env, list, add, obj);
+    }
+  }
+  return list;
+}
+
+JNIEXPORT jobject JNICALL
+Java_com_livio_BSON_BsonEncoder_bson_1object_1get_1hashmap(JNIEnv *env,
+                                                           jclass type,
+                                                           jlong bsonRef) {
+  if (bsonRef == -1) {
+    syslog(LOG_CRIT, "Invalid BSON Object");
+    return (*env)->NewGlobalRef(env, NULL);
+  }
+
+  return bson_object_to_hashmap(env, (BsonObject *)bsonRef);
 }
