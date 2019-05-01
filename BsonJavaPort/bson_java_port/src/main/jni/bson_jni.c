@@ -1,45 +1,42 @@
 #include "../../../../../src/bson_object.h"
 #include <jni.h>
+#include <syslog.h>
 
-BsonObject bsonObject;
-BsonArray bsonArray;
+JNIEXPORT jlong JNICALL
+Java_com_livio_BSON_BsonEncoder_initializeBsonObject(JNIEnv *env, jclass type) {
+
+  BsonObject *bsonObject = malloc(sizeof(BsonObject));
+  bson_object_initialize_default(bsonObject);
+  return (long)bsonObject;
+}
+
+JNIEXPORT void JNICALL Java_com_livio_BSON_BsonEncoder_deinitializeBsonObject(
+    JNIEnv *env, jclass type, jlong bsonRef) {
+
+  bson_object_deinitialize((BsonObject *)bsonRef);
+  free((BsonObject *)bsonRef);
+}
 
 JNIEXPORT jboolean JNICALL
 Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1int32(
     JNIEnv *env, jclass type, jlong bsonRef, jstring key_, jint value) {
   const char *key = (*env)->GetStringUTFChars(env, key_, 0);
 
-  jboolean tf = (jboolean)bson_object_put_int32((BsonObject *)bsonRef,
-                                                (char *)key, value);
+  jboolean tf =
+      (jboolean)bson_object_put_int32((BsonObject *)bsonRef, key, value);
 
   (*env)->ReleaseStringUTFChars(env, key_, key);
 
   return tf;
 }
 
-JNIEXPORT jbyteArray JNICALL
-Java_com_livio_BSON_BsonEncoder_bson_1object_1to_1bytes(JNIEnv *env,
-                                                        jobject instance,
-                                                        jlong bsonRef) {
-
-  jbyte *bytes = (jbyte *)bson_object_to_bytes((BsonObject *)bsonRef);
-
-  jsize capacity = (jsize)bson_object_size((BsonObject *)bsonRef);
-
-  jbyteArray array = (*env)->NewByteArray(env, capacity);
-
-  (*env)->SetByteArrayRegion(env, array, 0, capacity, (jbyte *)bytes);
-
-  return array;
-}
-
 JNIEXPORT jboolean JNICALL
 Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1int64(
-    JNIEnv *env, jobject instance, jlong bsonRef, jstring key_, jlong value) {
+    JNIEnv *env, jclass type, jlong bsonRef, jstring key_, jlong value) {
   const char *key = (*env)->GetStringUTFChars(env, key_, 0);
 
-  jboolean tf = (jboolean)bson_object_put_int64((BsonObject *)bsonRef,
-                                                (char *)key, value);
+  jboolean tf =
+      (jboolean)bson_object_put_int64((BsonObject *)bsonRef, key, value);
 
   (*env)->ReleaseStringUTFChars(env, key_, key);
 
@@ -53,8 +50,8 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1string(
 
   const char *value = (*env)->GetStringUTFChars(env, value_, 0);
 
-  jboolean tf = (jboolean)bson_object_put_string((BsonObject *)bsonRef,
-                                                 (char *)key, (char *)value);
+  jboolean tf = (jboolean)bson_object_put_string((BsonObject *)bsonRef, key,
+                                                 (char *)value);
 
   (*env)->ReleaseStringUTFChars(env, key_, key);
 
@@ -77,7 +74,7 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1bool(
   }
 
   jboolean ret =
-      (jboolean)bson_object_put_bool(&bsonObject, (char *)key, bsonBoolean);
+      (jboolean)bson_object_put_bool((BsonObject *)bsonRef, key, bsonBoolean);
 
   (*env)->ReleaseStringUTFChars(env, key_, key);
 
@@ -89,8 +86,8 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1double(
     JNIEnv *env, jclass type, jlong bsonRef, jstring key_, jdouble value) {
   const char *key = (*env)->GetStringUTFChars(env, key_, 0);
 
-  jboolean tf = (jboolean)bson_object_put_double((BsonObject *)bsonRef,
-                                                 (char *)key, value);
+  jboolean tf =
+      (jboolean)bson_object_put_double((BsonObject *)bsonRef, key, value);
 
   (*env)->ReleaseStringUTFChars(env, key_, key);
 
@@ -99,50 +96,85 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1double(
 
 JNIEXPORT jboolean JNICALL
 Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1object(
-    JNIEnv *env, jclass type, jlong bsonRef, jstring key_, jbyteArray value_) {
+    JNIEnv *env, jclass type, jlong bsonRef, jstring key_, jlong value) {
   const char *key = (*env)->GetStringUTFChars(env, key_, 0);
-  jbyte *value = (*env)->GetByteArrayElements(env, value_, NULL);
-  jsize length = (*env)->GetArrayLength(env, value_);
 
-  BsonObject bsonFromBytes;
-  size_t bytesRead = bson_object_from_bytes_len(
-      &bsonFromBytes, (uint8_t *)value, (size_t)length);
   jboolean tf = (jboolean)bson_object_put_object((BsonObject *)bsonRef, key,
-                                                 &bsonFromBytes);
+                                                 (BsonObject *)value);
 
   (*env)->ReleaseStringUTFChars(env, key_, key);
-  (*env)->ReleaseByteArrayElements(env, value_, value, 0);
+  // The BsonObject struct has been copied into the root object, no need to keep
+  // the original version
+  free((BsonObject *)value);
+
+  return tf;
+}
+JNIEXPORT jboolean JNICALL
+Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1array(
+    JNIEnv *env, jclass type, jlong bsonRef, jstring key_, jlong value) {
+  const char *key = (*env)->GetStringUTFChars(env, key_, 0);
+
+  jboolean tf = (jboolean)bson_object_put_array((BsonObject *)bsonRef, key,
+                                                (BsonArray *)value);
+
+  (*env)->ReleaseStringUTFChars(env, key_, key);
+  // The BsonArray struct has been copied into the object, no need to keep the
+  // original version
+  free((BsonArray *)value);
 
   return tf;
 }
 
-JNIEXPORT jlong JNICALL
-Java_com_livio_BSON_BsonEncoder_bson_1object_1from_1bytes(JNIEnv *env,
-                                                          jobject instance,
-                                                          jbyteArray data_) {
-  jbyte *data = (*env)->GetByteArrayElements(env, data_, NULL);
-  jsize length = (*env)->GetArrayLength(env, data_);
+JNIEXPORT jbyteArray JNICALL
+Java_com_livio_BSON_BsonEncoder_bson_1object_1to_1bytes(JNIEnv *env,
+                                                        jclass type,
+                                                        jlong bsonRef) {
 
-  size_t bytesRead =
-      bson_object_from_bytes_len(&bsonObject, (uint8_t *)data, (size_t)length);
+  jbyte *bytes = (jbyte *)bson_object_to_bytes((BsonObject *)bsonRef);
 
-  (*env)->ReleaseByteArrayElements(env, data_, data, 0);
+  jsize capacity = (jsize)bson_object_size((BsonObject *)bsonRef);
 
-  return (jlong)&bsonObject;
+  jbyteArray array = (*env)->NewByteArray(env, capacity);
+
+  (*env)->SetByteArrayRegion(env, array, 0, capacity, (jbyte *)bytes);
+
+  return array;
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_livio_BSON_BsonEncoder_initializeBsonArray(JNIEnv *env, jclass type) {
+Java_com_livio_BSON_BsonEncoder_bson_1object_1from_1bytes(JNIEnv *env,
+                                                          jclass type,
+                                                          jbyteArray data_) {
+  BsonObject *bsonObject = malloc(sizeof(BsonObject));
+  jbyte *data = (*env)->GetByteArrayElements(env, data_, NULL);
+  jsize len = (*env)->GetArrayLength(env, data_);
 
-  int default_size = 5;
-  bson_array_initialize(&bsonArray, (size_t)default_size);
-  return (jlong)&bsonArray;
+  size_t bytesRead =
+      bson_object_from_bytes_len(bsonObject, (uint8_t *)data, (size_t)len);
+
+  (*env)->ReleaseByteArrayElements(env, data_, data, 0);
+  if (bytesRead != (size_t)len) {
+    syslog(LOG_CRIT, "Unexpected length of object, returning -1");
+    free(bsonObject);
+    return -1;
+  }
+
+  return (jlong)bsonObject;
+}
+
+JNIEXPORT jlong JNICALL Java_com_livio_BSON_BsonEncoder_initializeBsonArray(
+    JNIEnv *env, jclass type, jlong size) {
+
+  BsonArray *bsonArray = malloc(sizeof(BsonArray));
+  bson_array_initialize(bsonArray, (size_t)size);
+  return (jlong)bsonArray;
 }
 
 JNIEXPORT void JNICALL Java_com_livio_BSON_BsonEncoder_deinitializeBsonArray(
     JNIEnv *env, jclass type, jlong bsonRef) {
 
   bson_array_deinitialize((BsonArray *)bsonRef);
+  free((BsonArray *)bsonRef);
 }
 
 JNIEXPORT jboolean JNICALL
@@ -213,38 +245,43 @@ Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1double(JNIEnv *env,
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_livio_BSON_BsonEncoder_bson_1object_1put_1array(JNIEnv *env,
-                                                         jobject instance,
+Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1object(JNIEnv *env,
+                                                         jclass type,
                                                          jlong bsonRef,
-                                                         jstring key_,
-                                                         jlong arrayRef) {
-  const char *key = (*env)->GetStringUTFChars(env, key_, 0);
+                                                         jlong value) {
 
-  jboolean tf = (jboolean)bson_object_put_array(
-      (BsonObject *)bsonRef, (char *)key, (BsonArray *)arrayRef);
-
-  (*env)->ReleaseStringUTFChars(env, key_, key);
+  jboolean tf = (jboolean)bson_array_add_object((BsonArray *)bsonRef,
+                                                (BsonObject *)value);
+  // The BsonObject struct has been copied into the array, no need to keep the
+  // original version
+  free((BsonObject *)value);
 
   return tf;
 }
 
-JNIEXPORT jlong JNICALL
-Java_com_livio_BSON_BsonEncoder_initializeBsonObject(JNIEnv *env, jclass type) {
+JNIEXPORT jboolean JNICALL
+Java_com_livio_BSON_BsonEncoder_bson_1array_1add_1array(JNIEnv *env,
+                                                        jclass type,
+                                                        jlong bsonRef,
+                                                        jlong value) {
 
-  bson_object_initialize_default(&bsonObject);
-  return (long)&bsonObject;
-}
+  jboolean tf =
+      (jboolean)bson_array_add_array((BsonArray *)bsonRef, (BsonArray *)value);
+  // The BsonArray struct has been copied into the root array, no need to keep
+  // the original version
+  free((BsonArray *)value);
 
-JNIEXPORT void JNICALL Java_com_livio_BSON_BsonEncoder_deinitializeBsonObject(
-    JNIEnv *env, jclass type, jlong bsonRef) {
-
-  bson_object_deinitialize((BsonObject *)bsonRef);
+  return tf;
 }
 
 JNIEXPORT jobject JNICALL
 Java_com_livio_BSON_BsonEncoder_bson_1object_1get_1hashmap(JNIEnv *env,
                                                            jclass type,
                                                            jlong bsonRef) {
+  if (bsonRef == -1) {
+    syslog(LOG_CRIT, "Invalid BSON Object");
+    return (*env)->NewGlobalRef(env, NULL);
+  }
 
   // initialize the HashMap class
   jclass mapClass = (*env)->FindClass(env, "java/util/HashMap");
@@ -282,7 +319,7 @@ Java_com_livio_BSON_BsonEncoder_bson_1object_1get_1hashmap(JNIEnv *env,
       jmethodID add =
           (*env)->GetMethodID(env, listClass, "add", "(Ljava/lang/Object;)Z");
 
-      int i;
+      size_t i;
       for (i = 0; i < array->count; i++) {
         BsonElement *a_elmnt = bson_array_get(array, (size_t)i);
         if (a_elmnt->type == TYPE_INT32) {

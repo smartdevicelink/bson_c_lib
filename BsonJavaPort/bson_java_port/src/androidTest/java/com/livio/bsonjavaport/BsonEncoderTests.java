@@ -83,7 +83,7 @@ public class BsonEncoderTests extends AndroidTestCase{
 		assert(compareHashMaps(testMapB, decodedMapB));
 	}
 
-	public void testDecodingRandomData(){
+	public void testDecodingRandomData() {
 		// Checking for proper handling of invalid data
 		byte[] randomBytes = new byte[200];
 		new Random().nextBytes(randomBytes);
