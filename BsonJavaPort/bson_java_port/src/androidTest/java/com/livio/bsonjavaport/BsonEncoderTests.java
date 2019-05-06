@@ -97,7 +97,7 @@ public class BsonEncoderTests extends TestCase {
 			try {
 				assertEquals(observedMapAbytes[i], testMapAbytes[i]);
 			}catch (Exception e){
-				assert(false);
+				fail();
 			}
 		}
 
@@ -106,7 +106,7 @@ public class BsonEncoderTests extends TestCase {
 			try {
 				assertEquals(observedMapBbytes[i], testMapBbytes[i]);
 			}catch (Exception e){
-				assert(false);
+				fail();
 			}
 		}
 	}
@@ -115,8 +115,8 @@ public class BsonEncoderTests extends TestCase {
 		HashMap<String, Object> decodedMapA = BsonEncoder.decodeFromBytes(testMapAbytes);
 		HashMap<String, Object> decodedMapB = BsonEncoder.decodeFromBytes(testMapBbytes);
 
-		assert(compareHashMaps(testMapA, decodedMapA));
-		assert(compareHashMaps(testMapB, decodedMapB));
+		assertTrue(compareHashMaps(testMapA, decodedMapA));
+		assertTrue(compareHashMaps(testMapB, decodedMapB));
 	}
 
 	public void testDecodingRandomData() {
@@ -130,7 +130,7 @@ public class BsonEncoderTests extends TestCase {
 		// Test nested objects and arrays
         byte[] bytes = BsonEncoder.encodeToBytes(testMapC);
         HashMap<String, Object> outMap = BsonEncoder.decodeFromBytes(bytes);
-        assert(testMapC.equals(outMap));
+		assertEquals(testMapC, outMap);
 	}
 
 	private boolean compareHashMaps(HashMap<String,Object> testMap, HashMap<String,Object> obsvMap){
