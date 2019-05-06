@@ -35,7 +35,10 @@ public class BsonEncoder {
 
         for (String key : elements.keySet()) {
             Object value = elements.get(key);
-            if (value instanceof List){
+            if (value instanceof HashMap){
+                long subObjRef = buildBsonObject((HashMap<String, Object>) value);
+                bson_object_put_object(bsonRef, key, subObjRef);
+            } else if (value instanceof List){
                 long arrayRef = buildBsonArray((List<Object>) value);
                 bson_object_put_array(bsonRef, key, arrayRef);
             } else if (value instanceof Integer) {
@@ -58,7 +61,13 @@ public class BsonEncoder {
         long bsonRef = initializeBsonArray(elements.size());
 
         for(Object value : elements){
-            if (value instanceof Integer) {
+            if (value instanceof HashMap){
+                long subObjRef = buildBsonObject((HashMap<String, Object>) value);
+                bson_array_add_object(bsonRef, subObjRef);
+            } else if (value instanceof List){
+                long arrayRef = buildBsonArray((List<Object>) value);
+                bson_array_add_array(bsonRef, arrayRef);
+            } else if (value instanceof Integer) {
                 bson_array_add_int32(bsonRef, (Integer) value);
             } else if (value instanceof Long) {
                 bson_array_add_int64(bsonRef, (Long) value);

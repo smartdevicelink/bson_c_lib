@@ -21,6 +21,7 @@ public class BsonEncoderTests extends TestCase {
 	private HashMap<String, Object> testMapA;
 	private HashMap<String, Object> testMapB;
 	private byte[] testMapAbytes, testMapBbytes;
+	private HashMap<String, Object> testMapC;
 
 	public void setUp() throws Exception{
 		super.setUp();
@@ -53,6 +54,41 @@ public class BsonEncoderTests extends TestCase {
 						"00" +
 						"00"
 		);
+
+		testMapC = new HashMap<>();
+
+		HashMap<String, Object> map2 = new HashMap<>();
+		HashMap<String, Object> map3 = new HashMap<>();
+		ArrayList<Object> list2 = new ArrayList<>();
+		ArrayList<Object> list3 = new ArrayList<>();
+
+		testMapC.put("correct", true);
+		testMapC.put("one", 64);
+		testMapC.put("two", 2.5);
+		testMapC.put("chars", "aaaaaaaaaaaa");
+
+		map2.put("a", 604);
+		map2.put("b", "AnotherString");
+		map2.put("c", 2.45);
+
+		testMapC.put("MapTest", map2);
+
+		list2.add(23);
+		list2.add(5.4);
+		list2.add("A string");
+
+		map3.put("i", 64);
+		map3.put("Test", 4);
+
+		list3.add(235);
+		list3.add(5.54);
+		list3.add("AString");
+
+		map3.put("secondarray", list3);
+
+		list2.add(map3);
+
+		testMapC.put("ArrayTest", list2);
 	}
 
 	public void testEncoding(){
@@ -88,6 +124,13 @@ public class BsonEncoderTests extends TestCase {
 		byte[] randomBytes = new byte[200];
 		new Random().nextBytes(randomBytes);
 		HashMap<String, Object> decodedMap = BsonEncoder.decodeFromBytes(randomBytes);
+	}
+
+	public void testEncodeDecodeConsistency() {
+		// Test nested objects and arrays
+        byte[] bytes = BsonEncoder.encodeToBytes(testMapC);
+        HashMap<String, Object> outMap = BsonEncoder.decodeFromBytes(bytes);
+        assert(testMapC.equals(outMap));
 	}
 
 	private boolean compareHashMaps(HashMap<String,Object> testMap, HashMap<String,Object> obsvMap){
