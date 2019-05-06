@@ -20,8 +20,8 @@ public class BsonEncoderTests extends TestCase {
 
 	private HashMap<String, Object> testMapA;
 	private HashMap<String, Object> testMapB;
-	private byte[] testMapAbytes, testMapBbytes;
 	private HashMap<String, Object> testMapC;
+	private byte[] testMapAbytes, testMapBbytes;
 
 	public void setUp() throws Exception{
 		super.setUp();
@@ -123,13 +123,13 @@ public class BsonEncoderTests extends TestCase {
 		// Checking for proper handling of invalid data
 		byte[] randomBytes = new byte[200];
 		new Random().nextBytes(randomBytes);
-		HashMap<String, Object> decodedMap = BsonEncoder.decodeFromBytes(randomBytes);
+		BsonEncoder.decodeFromBytes(randomBytes);
 	}
 
 	public void testEncodeDecodeConsistency() {
 		// Test nested objects and arrays
-        byte[] bytes = BsonEncoder.encodeToBytes(testMapC);
-        HashMap<String, Object> outMap = BsonEncoder.decodeFromBytes(bytes);
+		byte[] bytes = BsonEncoder.encodeToBytes(testMapC);
+		HashMap<String, Object> outMap = BsonEncoder.decodeFromBytes(bytes);
 		assertEquals(testMapC, outMap);
 	}
 
