@@ -2,12 +2,11 @@ apply plugin: 'com.android.library'
 
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 19
-        versionCode 1
+        targetSdkVersion 26
+        versionCode 2
         versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk{
@@ -43,8 +42,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 

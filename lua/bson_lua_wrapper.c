@@ -330,10 +330,16 @@ static int map_from_bytes(lua_State *L) {
     bytes[index] = byte_string[index] & 0xFF;
   }
 
-  BsonObject obj = bson_object_from_bytes(bytes);
+  BsonObject obj;
+  size_t bytes_read = bson_object_from_bytes_len(&obj, bytes, len);
   free(bytes);
-  
+
   char errorMessage[255];
+  if (bytes_read != len) {
+    snprintf(errorMessage, 255, "Provided string was not a valid BSON object, expected length: %zi, got: %zi", len, bytes_read);
+    return luaL_argerror(L, 1, errorMessage);
+  }
+
   const int result = bson_object_to_table(L, &obj, errorMessage);
   bson_object_deinitialize(&obj);
 
