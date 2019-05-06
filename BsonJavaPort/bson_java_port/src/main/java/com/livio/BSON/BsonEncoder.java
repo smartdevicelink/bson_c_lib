@@ -27,6 +27,8 @@ public class BsonEncoder {
             return map;
         }
         map = bson_object_get_hashmap(bsonRef);
+        deinitializeBsonObject(bsonRef);
+
         return map;
     }
     
