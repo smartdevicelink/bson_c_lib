@@ -2,12 +2,14 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT(bson_c_lib, 1.1.0, jacob@livio.io)
+AC_INIT(bson_c_lib, 1.2.0, jacob@livio.io)
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIRS([m4])
 LT_INIT
 AC_CONFIG_SRCDIR([examples/sample.c])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([libbson.pc])
+AC_OUTPUT
 
 # Checks for programs.
 AC_PROG_CC
