@@ -66,7 +66,7 @@ There is a jCenter artifact for Android. Add the following to your `build.gradle
 
 ```
 dependencies {
-    compile ('com.smartdevicelink:bson_java_port:1.1.1')
+    compile ('com.smartdevicelink:bson_java_port:1.2.0')
 }
 ```
 
@@ -75,4 +75,19 @@ dependencies {
 cd examples
 gcc -o sample sample.c -lbson
 ./sample
+```
+
+## Build and run unit tests ##
+
+Running unit tests requires `check` framework installed with pkg-config file (.pc). On Ubuntu, please install it by running:
+```
+sudo apt-get install check
+```
+
+Once the framework is installed, invoke `configure` with `--with-tests` option, build the library then run `make check`:
+
+```bash
+./configure --with-tests
+make
+make check
 ```

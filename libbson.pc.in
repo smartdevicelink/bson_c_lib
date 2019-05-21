@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libbson
+Description: Library for parsing to and from BSON format.
+URL: https://github.com/smartdevicelink/bson_c_lib
+Version: @VERSION@
+Requires: 
+Libs: -L${libdir} -lbson -lemhashmap
+Cflags: -I${includedir} -I${includedir}/emhashmap

@@ -1,13 +1,14 @@
 package com.livio.bsonjavaport;
 
-import android.test.AndroidTestCase;
-
 import com.livio.BSON.BsonEncoder;
+
+import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -15,10 +16,11 @@ import java.util.Set;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class BsonEncoderTests extends AndroidTestCase{
+public class BsonEncoderTests extends TestCase {
 
 	private HashMap<String, Object> testMapA;
 	private HashMap<String, Object> testMapB;
+	private HashMap<String, Object> testMapC;
 	private byte[] testMapAbytes, testMapBbytes;
 
 	public void setUp() throws Exception{
@@ -52,6 +54,41 @@ public class BsonEncoderTests extends AndroidTestCase{
 						"00" +
 						"00"
 		);
+
+		testMapC = new HashMap<>();
+
+		HashMap<String, Object> map2 = new HashMap<>();
+		HashMap<String, Object> map3 = new HashMap<>();
+		ArrayList<Object> list2 = new ArrayList<>();
+		ArrayList<Object> list3 = new ArrayList<>();
+
+		testMapC.put("correct", true);
+		testMapC.put("one", 64);
+		testMapC.put("two", 2.5);
+		testMapC.put("chars", "aaaaaaaaaaaa");
+
+		map2.put("a", 604);
+		map2.put("b", "AnotherString");
+		map2.put("c", 2.45);
+
+		testMapC.put("MapTest", map2);
+
+		list2.add(23);
+		list2.add(5.4);
+		list2.add("A string");
+
+		map3.put("i", 64);
+		map3.put("Test", 4);
+
+		list3.add(235);
+		list3.add(5.54);
+		list3.add("AString");
+
+		map3.put("secondarray", list3);
+
+		list2.add(map3);
+
+		testMapC.put("ArrayTest", list2);
 	}
 
 	public void testEncoding(){
@@ -60,7 +97,7 @@ public class BsonEncoderTests extends AndroidTestCase{
 			try {
 				assertEquals(observedMapAbytes[i], testMapAbytes[i]);
 			}catch (Exception e){
-				assert(false);
+				fail();
 			}
 		}
 
@@ -69,7 +106,7 @@ public class BsonEncoderTests extends AndroidTestCase{
 			try {
 				assertEquals(observedMapBbytes[i], testMapBbytes[i]);
 			}catch (Exception e){
-				assert(false);
+				fail();
 			}
 		}
 	}
@@ -78,8 +115,22 @@ public class BsonEncoderTests extends AndroidTestCase{
 		HashMap<String, Object> decodedMapA = BsonEncoder.decodeFromBytes(testMapAbytes);
 		HashMap<String, Object> decodedMapB = BsonEncoder.decodeFromBytes(testMapBbytes);
 
-		assert(compareHashMaps(testMapA, decodedMapA));
-		assert(compareHashMaps(testMapB, decodedMapB));
+		assertTrue(compareHashMaps(testMapA, decodedMapA));
+		assertTrue(compareHashMaps(testMapB, decodedMapB));
+	}
+
+	public void testDecodingRandomData() {
+		// Checking for proper handling of invalid data
+		byte[] randomBytes = new byte[200];
+		new Random().nextBytes(randomBytes);
+		BsonEncoder.decodeFromBytes(randomBytes);
+	}
+
+	public void testEncodeDecodeConsistency() {
+		// Test nested objects and arrays
+		byte[] bytes = BsonEncoder.encodeToBytes(testMapC);
+		HashMap<String, Object> outMap = BsonEncoder.decodeFromBytes(bytes);
+		assertEquals(testMapC, outMap);
 	}
 
 	private boolean compareHashMaps(HashMap<String,Object> testMap, HashMap<String,Object> obsvMap){
