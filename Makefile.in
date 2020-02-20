@@ -193,8 +193,8 @@ CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = src lua test
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(srcdir)/libbson.pc.in compile config.guess config.sub \
-	install-sh ltmain.sh missing
+	$(srcdir)/libbson.pc.in ar-lib compile config.guess config.sub \
+	depcomp install-sh ltmain.sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -279,6 +279,13 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
+LUA = @LUA@
+LUA_EXEC_PREFIX = @LUA_EXEC_PREFIX@
+LUA_INCLUDE = @LUA_INCLUDE@
+LUA_PLATFORM = @LUA_PLATFORM@
+LUA_PREFIX = @LUA_PREFIX@
+LUA_SHORT_VERSION = @LUA_SHORT_VERSION@
+LUA_VERSION = @LUA_VERSION@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
@@ -342,10 +349,14 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+luadir = @luadir@
+luaexecdir = @luaexecdir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgluadir = @pkgluadir@
+pkgluaexecdir = @pkgluaexecdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@

@@ -3,8 +3,9 @@
 
 AC_PREREQ([2.69])
 AC_INIT(bson_c_lib, 1.2.0, jacob@livio.io)
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects foreign -Wall])
 AC_CONFIG_MACRO_DIRS([m4])
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR]) # see https://lists.gnu.org/archive/html/automake/2012-05/msg00014.html
 LT_INIT
 AC_CONFIG_SRCDIR([examples/sample.c])
 AC_CONFIG_HEADERS([config.h])
@@ -13,6 +14,7 @@ AC_OUTPUT
 
 # Checks for programs.
 AC_PROG_CC
+AX_PROG_LUA([5.1], [5.4])
 
 # Checks for libraries.
 AC_ENABLE_SHARED
@@ -20,6 +22,7 @@ AC_DISABLE_STATIC
 
 # Checks for header files.
 AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h])
+AX_LUA_HEADERS
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL

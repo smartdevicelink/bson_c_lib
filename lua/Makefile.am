@@ -1,5 +1,8 @@
-AM_CFLAGS = -Wall
+ACLOCAL_AMFLAGS = -I m4 --install
 
-lib_LTLIBRARIES = libluabson.la
-libluabson_la_SOURCES = bson_lua_wrapper.c
-libluabson_la_LIBADD = ../src/libbson.la
+AM_LDFLAGS = -export-symbols-regex '^luaopen_' -module -avoid-version
+
+luaexec_LTLIBRARIES = bson4lua.la
+bson4lua_la_SOURCES = bson_lua_wrapper.c
+bson4lua_la_LIBADD = ../src/libbson.la
+bson4lua_la_CFLAGS = -I../src/

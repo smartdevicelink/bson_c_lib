@@ -7,6 +7,18 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
+/* Define to 1 if you have the <lauxlib.h> header file. */
+#define HAVE_LAUXLIB_H 1
+
+/* Define to 1 if you have the <luaconf.h> header file. */
+#define HAVE_LUACONF_H 1
+
+/* Define to 1 if you have the <lualib.h> header file. */
+#define HAVE_LUALIB_H 1
+
+/* Define to 1 if you have the <lua.h> header file. */
+#define HAVE_LUA_H 1
+
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
 #define HAVE_MALLOC 1
