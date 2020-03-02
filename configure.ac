@@ -14,7 +14,6 @@ AC_OUTPUT
 
 # Checks for programs.
 AC_PROG_CC
-AX_PROG_LUA([5.1], [5.4])
 
 # Checks for libraries.
 AC_ENABLE_SHARED
@@ -22,7 +21,6 @@ AC_DISABLE_STATIC
 
 # Checks for header files.
 AC_CHECK_HEADERS([stddef.h stdint.h stdlib.h string.h])
-AX_LUA_HEADERS
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
@@ -57,6 +55,13 @@ AC_ARG_WITH(
 AM_CONDITIONAL(
 	[BUILD_LUA], 
 	[test x$with_lua = xyes])
+
+AM_COND_IF(
+	[BUILD_LUA],
+	[AX_PROG_LUA([5.1], [5.4])])
+AM_COND_IF(
+	[BUILD_LUA],
+	[AX_LUA_HEADERS])
 
 AC_ARG_WITH(
 	[tests],

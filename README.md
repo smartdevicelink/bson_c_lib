@@ -1,8 +1,15 @@
 # README #
 Library for converting to and from BSON
 
+
+## Install Dependencies ##
+```bash
+sudo apt-get install autoconf-archive automake
+```
+
 ## Build library ##
 ```bash
+automake --add-missing
 ./configure
 make
 ```
@@ -16,7 +23,7 @@ sudo make install
 
 ### Install Dependencies ###
 ```bash
-sudo apt-get install liblua5.2-dev autoconf-archive
+sudo apt-get install liblua5.2-dev
 ```
 
 ### Build Library ###
