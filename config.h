@@ -7,18 +7,30 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
+/* Define to 1 if you have the <lauxlib.h> header file. */
+/* #undef HAVE_LAUXLIB_H */
+
+/* Define to 1 if you have the <luaconf.h> header file. */
+/* #undef HAVE_LUACONF_H */
+
+/* Define to 1 if you have the <lualib.h> header file. */
+/* #undef HAVE_LUALIB_H */
+
+/* Define to 1 if you have the <lua.h> header file. */
+/* #undef HAVE_LUA_H */
+
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
-/* #undef HAVE_MALLOC */
+#define HAVE_MALLOC 1
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the `memset' function. */
-/* #undef HAVE_MEMSET */
+#define HAVE_MEMSET 1
 
 /* Define to 1 if you have the <stddef.h> header file. */
-/* #undef HAVE_STDDEF_H */
+#define HAVE_STDDEF_H 1
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -42,7 +54,7 @@
 #define HAVE_UNISTD_H 1
 
 /* Define to 1 if the system has the type `_Bool'. */
-/* #undef HAVE__BOOL */
+#define HAVE__BOOL 1
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
