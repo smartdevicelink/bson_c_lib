@@ -1,15 +1,8 @@
 # README #
 Library for converting to and from BSON
 
-
-## Install Dependencies ##
-```bash
-sudo apt-get install autoconf-archive automake
-```
-
 ## Build library ##
 ```bash
-automake --add-missing
 ./configure
 make
 ```
