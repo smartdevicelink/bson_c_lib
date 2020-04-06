@@ -145,11 +145,16 @@ START_TEST(bson_object_from_bytes_corrupted_key)
   }
   memcpy(buf, test_data_corrupted, sizeof(test_data_corrupted));
 
+  // Test normal method
   BsonObject output;
   size_t ret = bson_object_from_bytes_len(&output, buf, sizeof(test_data_corrupted));
+
+  // Test deprecated method
+  BsonObject deprecated_output = bson_object_from_bytes(buf);
   free(buf);
 
   ck_assert_uint_eq(ret, 0);
+  ck_assert_uint_eq(bson_object_size(&deprecated_output), 5);
 }
 END_TEST
 
@@ -171,11 +176,16 @@ START_TEST(bson_object_from_bytes_corrupted_tag_length)
   }
   memcpy(buf, test_data_corrupted, sizeof(test_data_corrupted));
 
+  // Test normal method
   BsonObject output;
   size_t ret = bson_object_from_bytes_len(&output, buf, sizeof(test_data_corrupted));
+
+  // Test deprecated method
+  BsonObject deprecated_output = bson_object_from_bytes(buf);
   free(buf);
 
   ck_assert_uint_eq(ret, 0);
+  ck_assert_uint_eq(bson_object_size(&deprecated_output), 5);
 }
 END_TEST
 
@@ -197,11 +207,16 @@ START_TEST(bson_object_from_bytes_corrupted_string)
   }
   memcpy(buf, test_data_corrupted, sizeof(test_data_corrupted));
 
+  // Test normal method
   BsonObject output;
   size_t ret = bson_object_from_bytes_len(&output, buf, sizeof(test_data_corrupted));
+
+  // Test deprecated method
+  BsonObject deprecated_output = bson_object_from_bytes(buf);
   free(buf);
 
   ck_assert_uint_eq(ret, 0);
+  ck_assert_uint_eq(bson_object_size(&deprecated_output), 5);
 }
 END_TEST
 
@@ -223,11 +238,16 @@ START_TEST(bson_object_from_bytes_corrupted_integer)
   }
   memcpy(buf, test_data_corrupted, sizeof(test_data_corrupted));
 
+  // Test normal method
   BsonObject output;
   size_t ret = bson_object_from_bytes_len(&output, buf, sizeof(test_data_corrupted));
+
+  // Test deprecated method
+  BsonObject deprecated_output = bson_object_from_bytes(buf);
   free(buf);
 
   ck_assert_uint_eq(ret, 0);
+  ck_assert_uint_eq(bson_object_size(&deprecated_output), 5);
 }
 END_TEST
 
@@ -251,11 +271,16 @@ START_TEST(bson_object_from_bytes_corrupted_tag)
   }
   memcpy(buf, test_data_corrupted, sizeof(test_data_corrupted));
 
+  // Test normal method
   BsonObject output;
   size_t ret = bson_object_from_bytes_len(&output, buf, sizeof(test_data_corrupted));
+
+  // Test deprecated method
+  BsonObject deprecated_output = bson_object_from_bytes(buf);
   free(buf);
 
   ck_assert_uint_eq(ret, 0);
+  ck_assert_uint_eq(bson_object_size(&deprecated_output), 5);
 }
 END_TEST
 
