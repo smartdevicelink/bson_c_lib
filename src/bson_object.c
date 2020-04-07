@@ -165,7 +165,10 @@ BsonObject bson_object_from_bytes(uint8_t *data) {
   int32_t size = read_int32_le(&p);
 
   BsonObject obj;
-  bson_object_from_bytes_len(&obj, data, size);
+  size_t bytes = bson_object_from_bytes_len(&obj, data, size);
+  if (bytes <= 0) {
+    bson_object_initialize_default(&obj);
+  }
   return obj;
 }
 

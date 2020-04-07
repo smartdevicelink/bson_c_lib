@@ -144,7 +144,10 @@ BsonArray bson_array_from_bytes(uint8_t *data) {
   int32_t size = read_int32_le(&p);
 
   BsonArray array;
-  bson_array_from_bytes_len(&array, data, size);
+  size_t bytes = bson_array_from_bytes_len(&array, data, size);
+  if (bytes <= 0) {
+    bson_array_initialize(&array, 10);
+  }
   return array;
 }
 
