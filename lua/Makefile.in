@@ -130,7 +130,7 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(luaexecdir)"
 LTLIBRARIES = $(luaexec_LTLIBRARIES)
-bson4lua_la_DEPENDENCIES = $(top_builddir)/src/libbson.la
+bson4lua_la_DEPENDENCIES = ../src/libbson.la
 am_bson4lua_la_OBJECTS = bson4lua_la-bson_lua_wrapper.lo
 bson4lua_la_OBJECTS = $(am_bson4lua_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -338,8 +338,8 @@ ACLOCAL_AMFLAGS = -I m4 --install
 AM_LDFLAGS = -export-symbols-regex '^luaopen_' -module -avoid-version
 luaexec_LTLIBRARIES = bson4lua.la
 bson4lua_la_SOURCES = bson_lua_wrapper.c
-bson4lua_la_LIBADD = $(top_builddir)/src/libbson.la
-bson4lua_la_CFLAGS = -I$(top_builddir)/src/
+bson4lua_la_LIBADD = ../src/libbson.la
+bson4lua_la_CFLAGS = -I../src/
 all: all-am
 
 .SUFFIXES:
