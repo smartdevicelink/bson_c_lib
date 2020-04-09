@@ -114,8 +114,9 @@ bson_object_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(bson_object_test_CFLAGS) $(CFLAGS) \
 	$(bson_object_test_LDFLAGS) $(LDFLAGS) -o $@
+am__dirstamp = $(am__leading_dot)dirstamp
 am_bson_util_test_OBJECTS = bson_util_test-bson_util_test.$(OBJEXT) \
-	bson_util_test-bson_util.$(OBJEXT)
+	../src/bson_util_test-bson_util.$(OBJEXT)
 bson_util_test_OBJECTS = $(am_bson_util_test_OBJECTS)
 bson_util_test_DEPENDENCIES =
 bson_util_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -431,6 +432,13 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
+LUA = @LUA@
+LUA_EXEC_PREFIX = @LUA_EXEC_PREFIX@
+LUA_INCLUDE = @LUA_INCLUDE@
+LUA_PLATFORM = @LUA_PLATFORM@
+LUA_PREFIX = @LUA_PREFIX@
+LUA_SHORT_VERSION = @LUA_SHORT_VERSION@
+LUA_VERSION = @LUA_VERSION@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
@@ -494,10 +502,14 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+luadir = @luadir@
+luaexecdir = @luaexecdir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pkgluadir = @pkgluadir@
+pkgluaexecdir = @pkgluaexecdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -510,7 +522,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-bson_util_test_SOURCES = bson_util_test.c $(top_builddir)/src/bson_util.c
+bson_util_test_SOURCES = bson_util_test.c ../src/bson_util.c
 bson_util_test_CFLAGS = -Wall -I../src @CHECK_CFLAGS@
 bson_util_test_LDADD = @CHECK_LIBS@
 bson_object_test_SOURCES = bson_object_test.c
@@ -530,9 +542,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu test/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign test/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu test/Makefile
+	  $(AUTOMAKE) --foreign test/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -563,6 +575,14 @@ clean-checkPROGRAMS:
 bson_object_test$(EXEEXT): $(bson_object_test_OBJECTS) $(bson_object_test_DEPENDENCIES) $(EXTRA_bson_object_test_DEPENDENCIES) 
 	@rm -f bson_object_test$(EXEEXT)
 	$(AM_V_CCLD)$(bson_object_test_LINK) $(bson_object_test_OBJECTS) $(bson_object_test_LDADD) $(LIBS)
+../src/$(am__dirstamp):
+	@$(MKDIR_P) ../src
+	@: > ../src/$(am__dirstamp)
+../src/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) ../src/$(DEPDIR)
+	@: > ../src/$(DEPDIR)/$(am__dirstamp)
+../src/bson_util_test-bson_util.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 
 bson_util_test$(EXEEXT): $(bson_util_test_OBJECTS) $(bson_util_test_DEPENDENCIES) $(EXTRA_bson_util_test_DEPENDENCIES) 
 	@rm -f bson_util_test$(EXEEXT)
@@ -570,31 +590,35 @@ bson_util_test$(EXEEXT): $(bson_util_test_OBJECTS) $(bson_util_test_DEPENDENCIES
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f ../src/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/bson_util_test-bson_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bson_object_test-bson_object_test.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bson_util_test-bson_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bson_util_test-bson_util_test.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
@@ -627,19 +651,19 @@ bson_util_test-bson_util_test.obj: bson_util_test.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -c -o bson_util_test-bson_util_test.obj `if test -f 'bson_util_test.c'; then $(CYGPATH_W) 'bson_util_test.c'; else $(CYGPATH_W) '$(srcdir)/bson_util_test.c'; fi`
 
-bson_util_test-bson_util.o: $(top_builddir)/src/bson_util.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -MT bson_util_test-bson_util.o -MD -MP -MF $(DEPDIR)/bson_util_test-bson_util.Tpo -c -o bson_util_test-bson_util.o `test -f '$(top_builddir)/src/bson_util.c' || echo '$(srcdir)/'`$(top_builddir)/src/bson_util.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bson_util_test-bson_util.Tpo $(DEPDIR)/bson_util_test-bson_util.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_builddir)/src/bson_util.c' object='bson_util_test-bson_util.o' libtool=no @AMDEPBACKSLASH@
+../src/bson_util_test-bson_util.o: ../src/bson_util.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -MT ../src/bson_util_test-bson_util.o -MD -MP -MF ../src/$(DEPDIR)/bson_util_test-bson_util.Tpo -c -o ../src/bson_util_test-bson_util.o `test -f '../src/bson_util.c' || echo '$(srcdir)/'`../src/bson_util.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/bson_util_test-bson_util.Tpo ../src/$(DEPDIR)/bson_util_test-bson_util.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../src/bson_util.c' object='../src/bson_util_test-bson_util.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -c -o bson_util_test-bson_util.o `test -f '$(top_builddir)/src/bson_util.c' || echo '$(srcdir)/'`$(top_builddir)/src/bson_util.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -c -o ../src/bson_util_test-bson_util.o `test -f '../src/bson_util.c' || echo '$(srcdir)/'`../src/bson_util.c
 
-bson_util_test-bson_util.obj: $(top_builddir)/src/bson_util.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -MT bson_util_test-bson_util.obj -MD -MP -MF $(DEPDIR)/bson_util_test-bson_util.Tpo -c -o bson_util_test-bson_util.obj `if test -f '$(top_builddir)/src/bson_util.c'; then $(CYGPATH_W) '$(top_builddir)/src/bson_util.c'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/src/bson_util.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bson_util_test-bson_util.Tpo $(DEPDIR)/bson_util_test-bson_util.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(top_builddir)/src/bson_util.c' object='bson_util_test-bson_util.obj' libtool=no @AMDEPBACKSLASH@
+../src/bson_util_test-bson_util.obj: ../src/bson_util.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -MT ../src/bson_util_test-bson_util.obj -MD -MP -MF ../src/$(DEPDIR)/bson_util_test-bson_util.Tpo -c -o ../src/bson_util_test-bson_util.obj `if test -f '../src/bson_util.c'; then $(CYGPATH_W) '../src/bson_util.c'; else $(CYGPATH_W) '$(srcdir)/../src/bson_util.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/bson_util_test-bson_util.Tpo ../src/$(DEPDIR)/bson_util_test-bson_util.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../src/bson_util.c' object='../src/bson_util_test-bson_util.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -c -o bson_util_test-bson_util.obj `if test -f '$(top_builddir)/src/bson_util.c'; then $(CYGPATH_W) '$(top_builddir)/src/bson_util.c'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/src/bson_util.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bson_util_test_CFLAGS) $(CFLAGS) -c -o ../src/bson_util_test-bson_util.obj `if test -f '../src/bson_util.c'; then $(CYGPATH_W) '../src/bson_util.c'; else $(CYGPATH_W) '$(srcdir)/../src/bson_util.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -934,6 +958,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f ../src/$(DEPDIR)/$(am__dirstamp)
+	-rm -f ../src/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -944,7 +970,7 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ../src/$(DEPDIR) ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -990,7 +1016,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR)
+	-rm -rf ../src/$(DEPDIR) ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

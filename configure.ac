@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT(bson_c_lib, 1.2.0, jacob@livio.io)
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects foreign -Wall])
 AC_CONFIG_MACRO_DIRS([m4])
 LT_INIT
 AC_CONFIG_SRCDIR([examples/sample.c])
@@ -54,6 +54,13 @@ AC_ARG_WITH(
 AM_CONDITIONAL(
 	[BUILD_LUA], 
 	[test x$with_lua = xyes])
+
+AM_COND_IF(
+	[BUILD_LUA],
+	[AX_PROG_LUA([5.1], [5.4])])
+AM_COND_IF(
+	[BUILD_LUA],
+	[AX_LUA_HEADERS])
 
 AC_ARG_WITH(
 	[tests],
