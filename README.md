@@ -16,7 +16,7 @@ sudo make install
 
 ### Install Dependencies ###
 ```bash
-sudo apt-get install liblua5.2-dev
+sudo apt-get install lua5.2 liblua5.2 liblua5.2-dev
 ```
 
 ### Build Library ###
