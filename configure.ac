@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT(bson_c_lib, 1.2.1, jacob@livio.io)
+AC_INIT(bson_c_lib, 1.2.2, jacob@livio.io)
 AM_INIT_AUTOMAKE([subdir-objects foreign -Wall])
 AC_CONFIG_MACRO_DIRS([m4])
 LT_INIT
