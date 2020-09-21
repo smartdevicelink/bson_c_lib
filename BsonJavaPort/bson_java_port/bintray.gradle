@@ -5,7 +5,7 @@ apply plugin: 'maven-publish'
 def siteUrl = 'https://github.com/smartdevicelink/bson_c_lib/'      // Homepage URL of the library
 def gitUrl = 'https://github.com/smartdevicelink/bson_c_lib.git'   // Git repository URL
 group = "com.smartdevicelink" // Maven Group ID for the artifact
-version = "X.X.X" // Set POM version here as well
+version = "1.2.2" // Set POM version here as well
 def libDescription = 'BSON library for SmartDeviceLink'
 
 install {
