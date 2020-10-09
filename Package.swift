@@ -8,7 +8,7 @@ let package = Package(
         .iOS(.v9)
     ],
     products: [
-        .library(name: "BiSON")
+        .library(name: "BiSON", targets: ["BiSON"])
     ],
     targets: [
         .target(
