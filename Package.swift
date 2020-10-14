@@ -22,9 +22,9 @@ let package = Package(
                 "emhashmap/Makefile.in",
                 "emhashmap/Makefile.am",
                 "emhashmap/runtests.sh",
-                "emhashmap/tests.c"
+                "emhashmap/tests/tests.c"
             ],
-            publicHeadersPath: "."
+            publicHeadersPath: "./"
         )
     ]
 )
