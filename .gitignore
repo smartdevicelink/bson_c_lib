@@ -4,6 +4,7 @@
 *.lo
 *.log
 *.trs
+*.pc
 sample
 Makefile
 .deps/

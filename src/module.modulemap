@@ -1,0 +1,8 @@
+module bson {
+    header "emhashmap/emhashmap.h"
+    header "bson_object.h"
+    header "bson_array.h"
+    header "bson_util.h"
+
+    export *
+}

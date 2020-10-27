@@ -52,7 +52,7 @@ uint8_t *bson_array_to_bytes(BsonArray *array) {
   for (i = 0; i < array->count; i++) {
     BsonElement *element = array->elements[i];
 
-    bytes[position++] = element->type;
+    bytes[position++] = (uint8_t)element->type;
 
     uint8_t *keyBytes = index_to_key(i);
     memcpy(&bytes[position], keyBytes, digits(i));
@@ -144,7 +144,7 @@ BsonArray bson_array_from_bytes(uint8_t *data) {
   int32_t size = read_int32_le(&p);
 
   BsonArray array;
-  size_t bytes = bson_array_from_bytes_len(&array, data, size);
+  size_t bytes = bson_array_from_bytes_len(&array, data, (size_t)size);
   if (bytes <= 0) {
     bson_array_initialize(&array, 10);
   }
@@ -240,7 +240,7 @@ size_t bson_array_from_bytes_len(BsonArray *output, const uint8_t *data, size_t 
             bson_array_add_string(&array, stringVal);
             free(stringVal);
             current += bufferLength;
-            remainBytes -= bufferLength;
+            remainBytes -= (size_t)bufferLength;
           } else {
             parseError = true;
           }

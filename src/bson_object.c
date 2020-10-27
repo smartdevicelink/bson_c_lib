@@ -72,7 +72,7 @@ uint8_t *bson_object_to_bytes(BsonObject *obj) {
   while (current != NULL) {
     BsonElement *element = (BsonElement *)current->value;
 
-    bytes[position++] = element->type;
+    bytes[position++] = (uint8_t)element->type;
 
     uint8_t *keyBytes = string_to_byte_array(current->key);
     memcpy(&bytes[position], keyBytes, strlen(current->key));
@@ -165,7 +165,7 @@ BsonObject bson_object_from_bytes(uint8_t *data) {
   int32_t size = read_int32_le(&p);
 
   BsonObject obj;
-  size_t bytes = bson_object_from_bytes_len(&obj, data, size);
+  size_t bytes = bson_object_from_bytes_len(&obj, data, (size_t)size);
   if (bytes <= 0) {
     bson_object_initialize_default(&obj);
   }
@@ -261,7 +261,7 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
             bson_object_put_string(&obj, key, stringVal);
             free(stringVal);
             current += bufferLength;
-            remainBytes -= bufferLength;
+            remainBytes -= (size_t)bufferLength;
           } else {
             parseError = true;
           }

@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   s.name         = "BiSON"
-  s.version      = "1.2.1"
+  s.version      = "1.2.2"
   s.summary      = "A portable BSON C library"
 
 
@@ -48,7 +48,7 @@ Pod::Spec.new do |s|
   #
 
   #  When using multiple platforms
-  s.ios.deployment_target = "6.0"
+  s.ios.deployment_target = "9.0"
   s.osx.deployment_target = "10.7"
   s.watchos.deployment_target = "2.0"
   s.tvos.deployment_target = "9.0"
