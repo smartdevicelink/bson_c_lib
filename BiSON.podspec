@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   s.name         = "BiSON"
-  s.version      = "1.2.2"
+  s.version      = "1.2.3"
   s.summary      = "A portable BSON C library"
 
 
