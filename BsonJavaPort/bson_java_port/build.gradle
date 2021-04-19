@@ -1,13 +1,12 @@
 apply plugin: 'com.android.library'
 
-
 android {
     compileSdkVersion 28
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 26
         versionCode 2
-        versionName "1.2.2"
+        versionName "1.2.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk{
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
@@ -42,9 +41,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
     }
 }
 
-apply from: 'bintray.gradle'
+apply plugin: "com.vanniktech.maven.publish"
