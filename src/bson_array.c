@@ -288,7 +288,7 @@ size_t bson_array_from_bytes_len(BsonArray *output, const uint8_t *data, size_t 
     }
   }
 
-  if (parseError) {
+  if (parseError || dataSize - remainBytes == 0) {
     bson_array_deinitialize(&array);
     return 0;
   }
