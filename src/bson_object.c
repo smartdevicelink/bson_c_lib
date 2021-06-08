@@ -309,7 +309,7 @@ size_t bson_object_from_bytes_len(BsonObject *output, const uint8_t *data, size_
     }
   }
 
-  if (parseError) {
+  if (parseError || dataSize - remainBytes == 0) {
     bson_object_deinitialize(&obj);
     return 0;
   }
