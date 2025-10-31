@@ -1,14 +1,38 @@
-apply plugin: 'com.android.library'
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
+    }
+}
+
+plugins {
+    id "com.android.library"
+    id "com.vanniktech.maven.publish" version "0.34.0"
+}
 
 android {
-    compileSdkVersion 28
+    namespace "com.livio"
+    testNamespace "com.livio.bsonjavaport"
+    ndkVersion "29.0.14206865"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    compileSdk {
+        version = release(36)
+    }
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 26
+        minSdkVersion 21
+        targetSdkVersion 36
         versionCode 2
-        versionName "1.2.5"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        ndk{
+        versionName "1.2.6"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
         }
     }
@@ -27,23 +51,14 @@ android {
 
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    androidTestImplementation 'junit:junit:4.12'
-}
-
-buildscript {
     repositories {
-        jcenter()
+        google()
         mavenCentral()
     }
-    dependencies {
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
-    }
+    testImplementation("androidx.test.ext:junit:1.3.0")
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
 }
-
-apply plugin: "com.vanniktech.maven.publish"

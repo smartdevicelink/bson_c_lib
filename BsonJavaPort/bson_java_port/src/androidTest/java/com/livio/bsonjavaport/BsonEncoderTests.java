@@ -2,7 +2,12 @@ package com.livio.bsonjavaport;
 
 import com.livio.BSON.BsonEncoder;
 
-import junit.framework.TestCase;
+import androidx.test.runner.AndroidJUnit4;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,15 +21,16 @@ import java.util.Set;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class BsonEncoderTests extends TestCase {
+@RunWith(AndroidJUnit4.class)
+public class BsonEncoderTests {
 
 	private HashMap<String, Object> testMapA;
 	private HashMap<String, Object> testMapB;
 	private HashMap<String, Object> testMapC;
 	private byte[] testMapAbytes, testMapBbytes;
 
-	public void setUp() throws Exception{
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 
 		testMapA = new HashMap<>();
 		testMapA.put("hello","world");
@@ -91,34 +97,37 @@ public class BsonEncoderTests extends TestCase {
 		testMapC.put("ArrayTest", list2);
 	}
 
+	@Test
 	public void testEncoding(){
 		byte[] observedMapAbytes = BsonEncoder.encodeToBytes(testMapA);
 		for(int i = 0; i < observedMapAbytes.length; i++){
 			try {
-				assertEquals(observedMapAbytes[i], testMapAbytes[i]);
-			}catch (Exception e){
-				fail();
+				Assert.assertEquals(observedMapAbytes[i], testMapAbytes[i]);
+			} catch (Exception e){
+				Assert.fail();
 			}
 		}
 
 		byte[] observedMapBbytes = BsonEncoder.encodeToBytes(testMapB);
 		for(int i = 0; i < observedMapBbytes.length; i++){
 			try {
-				assertEquals(observedMapBbytes[i], testMapBbytes[i]);
-			}catch (Exception e){
-				fail();
+				Assert.assertEquals(observedMapBbytes[i], testMapBbytes[i]);
+			} catch (Exception e){
+				Assert.fail();
 			}
 		}
 	}
 
+	@Test
 	public void testDecoding(){
 		HashMap<String, Object> decodedMapA = BsonEncoder.decodeFromBytes(testMapAbytes);
 		HashMap<String, Object> decodedMapB = BsonEncoder.decodeFromBytes(testMapBbytes);
 
-		assertTrue(compareHashMaps(testMapA, decodedMapA));
-		assertTrue(compareHashMaps(testMapB, decodedMapB));
+		Assert.assertTrue(compareHashMaps(testMapA, decodedMapA));
+		Assert.assertTrue(compareHashMaps(testMapB, decodedMapB));
 	}
 
+	@Test
 	public void testDecodingRandomData() {
 		// Checking for proper handling of invalid data
 		byte[] randomBytes = new byte[200];
@@ -126,11 +135,12 @@ public class BsonEncoderTests extends TestCase {
 		BsonEncoder.decodeFromBytes(randomBytes);
 	}
 
+	@Test
 	public void testEncodeDecodeConsistency() {
 		// Test nested objects and arrays
 		byte[] bytes = BsonEncoder.encodeToBytes(testMapC);
 		HashMap<String, Object> outMap = BsonEncoder.decodeFromBytes(bytes);
-		assertEquals(testMapC, outMap);
+		Assert.assertEquals(testMapC, outMap);
 	}
 
 	private boolean compareHashMaps(HashMap<String,Object> testMap, HashMap<String,Object> obsvMap){
