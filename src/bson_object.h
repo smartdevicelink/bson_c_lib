@@ -4,37 +4,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "bson_common.h"
 #include "bson_util.h"
 #include "bson_array.h"
 #include "emhashmap/emhashmap.h"
-
-typedef struct BsonArray BsonArray;
-
-typedef enum element_type element_type;
-typedef enum bson_boolean bson_boolean;
-
-struct BsonObject {
-  //Internal map implementation
-  HashMap data;
-};
-typedef struct BsonObject BsonObject;
-
-struct BsonElement {
-  //The value of this element
-  void *value;
-  //The data type of this element
-  element_type type;
-  //Size of the element in bytes when converted to BSON 
-  //Unused for TYPE_DOCUMENT and TYPE_ARRAY
-  size_t size;
-};
-typedef struct BsonElement BsonElement;
-
-struct BsonObjectEntry {
-  char key[255];
-  BsonElement *element;
-};
-typedef struct BsonObjectEntry BsonObjectEntry;
 
 #ifdef __cplusplus
 extern "C" {

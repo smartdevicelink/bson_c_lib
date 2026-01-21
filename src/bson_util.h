@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include "bson_common.h"
 
 //4 bytes for length, one for ending null character
 #define OBJECT_OVERHEAD_BYTES 5
@@ -24,39 +25,6 @@
 //Last byte in a BSON document
 #define DOCUMENT_END 0x00
 
-//Byte which defines the type of a value as defined in the BSON spec
-enum element_type {
-  TYPE_DOUBLE = 0x01,
-  TYPE_STRING = 0x02,
-  TYPE_DOCUMENT = 0x03,
-  TYPE_ARRAY = 0x04,
-  TYPE_BINARY = 0x05, //unused
-  TYPE_UNDEFINED = 0x06, //deprecated
-  TYPE_OBJECT_ID = 0x07, //unused
-  TYPE_BOOLEAN = 0x08,
-  TYPE_DATE_TIME = 0x09, //unused
-  TYPE_NULL = 0x0A, //unused
-  TYPE_REGEX = 0x0B, //unused
-  TYPE_DB_POINTER = 0x0C, //deprecated
-  TYPE_JS_CODE = 0x0D, //unused
-  TYPE_SYMBOL = 0x0E, //deprecated
-  TYPE_JS_CODE_WITH_SCOPE = 0x0F, //unused
-  TYPE_INT32 = 0x10,
-  TYPE_TIMESTAMP = 0x11, //unused
-  TYPE_INT64 = 0x12,
-  TYPE_DEC128 = 0x13, //unused
-  TYPE_MIN_KEY = 0xFF, //unused
-  TYPE_MAX_KEY = 0x7F //unused
-};
-typedef enum element_type element_type;
-
-//Definition of each boolean value according to the BSON spec
-enum bson_boolean {
-  BOOLEAN_INVALID = -1,
-  BOOLEAN_FALSE = 0x00,
-  BOOLEAN_TRUE = 0x01
-};
-typedef enum bson_boolean bson_boolean;
 
 #ifdef __cplusplus
 extern "C" {
